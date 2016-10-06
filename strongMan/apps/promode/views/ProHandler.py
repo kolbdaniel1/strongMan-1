@@ -24,7 +24,7 @@ class ProHandler:
                 context['pprint'] = dict(context.items())
 
                 pro_vici_wrapper = ProViciWrapper()
-                msg = pro_vici_wrapper.get_msg()
+                msg = pro_vici_wrapper.get_version_pro()
 
                 context['msg'] = msg
 

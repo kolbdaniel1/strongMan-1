@@ -1,6 +1,14 @@
-class ProViciWrapper:
-    def __init__(self):
-        self.msg = "yeah"
+from strongMan.apps.vici.wrapper.wrapper import ViciWrapper
+from strongMan.apps.vici.wrapper.exception import ViciLoadException
 
-    def get_msg(self):
-        return self.msg
+
+class ProViciWrapper(ViciWrapper):
+
+    def get_version_pro(self):
+        '''
+        :rtype: dict
+        '''
+        try:
+            return self.session.version()
+        except Exception as e:
+            raise ViciLoadException("Version information cannot be loaded!")
