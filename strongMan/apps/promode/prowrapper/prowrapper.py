@@ -16,14 +16,14 @@ class ProViciWrapper(ViciWrapper):
     def list_conns(self):
         connections = []
         for connection in self.session.list_conns():
-            connections += connection
+            connections.append(connection)
         return connections
 
     def get_conns(self):
         return self.session.get_conns()
 
     def list_certs(self):
-        certs = []
-        for cert in self.session.list_certs():
-            certs += cert
-        return certs
+        certificates = []
+        for certificate in self.session.list_certs():
+            certificates.append(certificate)
+        return certificates
