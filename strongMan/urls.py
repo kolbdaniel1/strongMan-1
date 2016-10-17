@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'change_pw$', views.pw_change, name='pw_change'),
     url(r'^about/?$', views.about, name='about'),
     url(r'^server_overview/', include(prold_urls)),
+    url(r'^server_connections/', include(prold_urls)),
 ]
 
 handler400 = 'strongMan.apps.views.bad_request'

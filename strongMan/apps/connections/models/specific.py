@@ -3,8 +3,8 @@ from collections import OrderedDict
 from django.db import models
 from django.dispatch import receiver
 
-from helper_apps.encryption import fields
 from strongMan.apps.certificates.models import UserCertificate, CertificateDoNotDelete, PrivateKey
+from strongMan.helper_apps.encryption import fields
 from .authentication import Authentication
 from .common import CertConDoNotDeleteMessage, KeyConDoNotDeleteMessage
 
