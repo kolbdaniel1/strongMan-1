@@ -17,7 +17,6 @@ INSTALLED_APPS = [
     'strongMan.apps.connections',
     'strongMan.apps.certificates',
     'strongMan.apps.server_overview',
-    'strongMan.apps.server_connections',
     'django_tables2',
     'dj_static',
 ]
