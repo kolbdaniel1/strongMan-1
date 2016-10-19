@@ -5,10 +5,10 @@ from django.contrib import messages
 from strongMan.apps.vici.wrapper.exception import ViciLoadException
 from strongMan.apps.vici.wrapper.wrapper import ViciWrapper
 
-from strongMan.apps.server_overview.advancedwrapper.advancedwrapper import ProViciWrapper
+from strongMan.apps.server_connections.serverviciwrapper.serverviciwrapper import ProViciWrapper
 
 
-class ProHandler:
+class OverviewHandler:
     def __init__(self, request):
         self.request = request
 
@@ -31,4 +31,4 @@ class ProHandler:
             return self._render(context)
 
     def _render(self, context):
-        return render(self.request, 'server_overview/overview.html', context)
+        return render(self.request, 'server_connections/overview.html', context)
