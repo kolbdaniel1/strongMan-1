@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class ProConfig(AppConfig):
-    name = 'server_overview'
+class serverConnectionsConfig(AppConfig):
+    name = 'server_connections'

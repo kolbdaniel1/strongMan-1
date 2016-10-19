@@ -1,34 +1,30 @@
-from collections import OrderedDict
-from django.shortcuts import render
 from django.contrib import messages
+from django.shortcuts import render
+from django_tables2 import RequestConfig
+from collections import OrderedDict
 
-from strongMan.apps.vici.wrapper.exception import ViciLoadException
-from strongMan.apps.vici.wrapper.wrapper import ViciWrapper
+from strongMan.apps.server_connections.models.connections import Connection
 
-from strongMan.apps.server_connections.serverviciwrapper.serverviciwrapper import ProViciWrapper
+from strongMan.apps.vici.wrapper.exception import ViciException
+
+from ..tables import ConnectionTable
 
 
 class OverviewHandler:
     def __init__(self, request):
         self.request = request
+        self.ENTRIES_PER_PAGE = 10
 
     def handle(self):
-        if self.request.method == "GET":
-            context = OrderedDict()
-            try:
-                vici_wrapper = ViciWrapper()
-                context['status'] = vici_wrapper.get_status()
-                context['version'] = vici_wrapper.get_version()
+        try:
+            return self._render()
+        except ViciException as e:
+            messages.warning(self.request, str(e))
 
-                pro_vici_wrapper = ProViciWrapper()
-                context['list_conns'] = pro_vici_wrapper.list_conns()
-                context['get_conns'] = pro_vici_wrapper.get_conns()
-                context['list_certs'] = pro_vici_wrapper.list_certs()
-
-            except ViciLoadException as e:
-                messages.warning(self.request, str(e))
-            messages.info(self.request, "Cooli sach, jetzt bisch profi! ;)")
-            return self._render(context)
-
-    def _render(self, context):
-        return render(self.request, 'server_connections/overview.html', context)
+    def _render(self):
+        queryset = Connection.objects.all()
+        table = ConnectionTable(queryset, request=self.request)
+        RequestConfig(self.request, paginate={"per_page": self.ENTRIES_PER_PAGE}).configure(table)
+        if len(queryset) == 0:
+            table = None
+        return render(self.request, 'server_connections/overview.html', {'table': table})
