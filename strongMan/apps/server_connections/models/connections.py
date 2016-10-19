@@ -25,7 +25,7 @@ class Connection(models.Model):
             children[child.name] = child.dict()
 
         ike_sa = OrderedDict()
-        ike_sa['remote_addrs'] = [remote_address.value for remote_address in self.remote_addresses.all()]
+        ike_sa['remote_addrs'] = [remote_address.value for remote_address in self.server_remote_addresses.all()]
         ike_sa['vips'] = [vip.value for vip in self.server_vips.all()]
         ike_sa['version'] = self.version
         ike_sa['proposals'] = [proposal.type for proposal in self.proposals.all()]
