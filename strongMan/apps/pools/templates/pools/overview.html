@@ -13,16 +13,27 @@
 {% block content %}
     <div id="pools-overview" class="row col-xs-12 col-md-10 col-md-offset-1">
 
-        <div id="con-table" class="">
+        <div id="pool-table" class="">
             {% if table %}
                 <div class="col-xs-12">
-                    {% render_table table 'connections/widgets/table.html' %}
+                    {% render_table table 'pools/widgets/table.html' %}
                 </div>
             {% else %}
                 <h3 id="no_certs_to_show">No pools to show</h3>
                 <p>Feel free to add a new pool with the blue Add button on the right side.</p>
             {% endif %}
         </div>
+
+         <div class="row" id="header">
+                <div class="pull-right" id="add-btn">
+                    <span title="Create a new pool">
+                        <a href="{% url "pools:add" %}" type="button" class="btn btn-primary btn-lg"
+                           aria-label="Left Align">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+                        </a>
+                    </span>
+                </div>
+            </div>
 
         <div class="form-row">
             <div class="col-xs-12">
