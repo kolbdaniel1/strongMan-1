@@ -1,9 +1,9 @@
 from django.contrib import messages
 from django.shortcuts import render
 from django_tables2 import RequestConfig
-from collections import OrderedDict
 
-from strongMan.apps.server_connections.models.connections import Connection
+from strongMan.apps.pools.models.pools import Pool
+
 
 from strongMan.apps.vici.wrapper.exception import ViciException
 
@@ -22,7 +22,7 @@ class OverviewHandler:
             messages.warning(self.request, str(e))
 
     def _render(self):
-        queryset = Pools.objects.all()
+        queryset = Pool.objects.all()
         table = tables.PoolsTable(queryset, request=self.request)
         RequestConfig(self.request, paginate={"per_page": self.ENTRIES_PER_PAGE}).configure(table)
         if len(queryset) == 0:
