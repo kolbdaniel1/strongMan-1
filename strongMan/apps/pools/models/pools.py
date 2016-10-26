@@ -14,11 +14,14 @@ class Pool(models.Model):
         # do something with the pool
         return pool
 
-    def dict(self):
-        children = OrderedDict()
-        for child in self.children.all():
-            children[child.name] = child
-        return children
+    # def dict(self):
+    #     children = OrderedDict()
+    #     for child in self.children.all():
+    #         children[child.name] = child
+    #     return children
 
     def __str__(self):
+        return self
+
+    def __repr__(self):
         return self

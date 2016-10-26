@@ -33,8 +33,8 @@ class AddHandler:
 #           form.create_connection()
 #           return redirect(reverse("connections:index"))
 
-        pool = Pool()
-        pool.create(self.form.my_poolname, self.form.my_addresses)
+        pool = Pool(poolname=self.form.my_poolname, addresses=self.form.my_addresses)
+        # pool.create(self.form.my_poolname, self.form.my_addresses)
         pool.save()
         return self._render(form=self.form)
 
