@@ -3,8 +3,8 @@ from django.template.loader import render_to_string
 
 
 class PoolsTable(tables.Table):
-    name = tables.Column(accessor="profile", verbose_name='Name')
-    addresses = tables.Column(accessor="addresses.first.value", verbose_name="Server", orderable=False)
+    poolname = tables.Column(accessor="name", verbose_name="Name")
+    addresses = tables.Column(accessor="addresses.first.value", verbose_name="Addresses", orderable=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
@@ -13,8 +13,8 @@ class PoolsTable(tables.Table):
     def render_name(self, record):
         return render_to_string('pools/widgets/name_column.html', {'record': record}, request=self.request)
 
-    def render_state(self, record):
-        return render_to_string('pools/widgets/state_column.html', {'record': record}, request=self.request)
+    def render_addresses(self, record):
+        return render_to_string('pools/widgets/address_column.html', {'record': record}, request=self.request)
 
     class Meta:
         attrs = {"class": "table"}
