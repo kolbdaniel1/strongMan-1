@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django_tables2 import RequestConfig
 
-from strongMan.apps.pools.models.pools import Pool
+from strongMan.apps.pools.models import Pool
 from strongMan.helper_apps.vici.wrapper.exception import ViciException
 from .. import tables
 

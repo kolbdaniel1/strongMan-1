@@ -18,6 +18,8 @@
   padding: 2px; }
 #pools-overview th:last-child, #pools-overview td:last-child {
   width: 16.66666667%; }
+#pools-overview th:first-child, #pools-overview td:first-child {
+  width: 5%; }
 
 #pools-add .form-row {
   margin-bottom: 10px;

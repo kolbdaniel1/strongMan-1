@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 
 
 class PoolsTable(tables.Table):
-    detail_collapse_column = tables.Column(accessor="id", verbose_name="Show Details", orderable=False)
+    detail_collapse_column = tables.Column(accessor="id", verbose_name="", orderable=False)
     poolname = tables.Column(accessor="poolname", verbose_name="Name")
     addresses = tables.Column(accessor="addresses", verbose_name="Addresses")
     removebtn = tables.Column(accessor="id", verbose_name='Remove Pool', orderable=False)

@@ -29,6 +29,9 @@
   th:last-child, td:last-child {
     width: 16.66666667%;
   }
+  th:first-child, td:first-child {
+    width: 5%;
+  }
 }
 
 #pools-add {
