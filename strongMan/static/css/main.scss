@@ -12,13 +12,16 @@ $nav-font-color: #EDEDED;
 }
 
 html {
-  position: relative;
   height: 100%;
   body {
     margin-bottom: 200px;
     font-family: 'strongUbuntu', sans-serif;
+    padding-top: 20px;
+    height: 100%;
+    .container {
+      height: 100%;
+    }
   }
-
 }
 
 .content {
@@ -87,7 +90,6 @@ html {
       width: 70%;
     }
   }
-
 }
 
 .table-container {
@@ -100,11 +102,9 @@ html {
   h3 {
     margin-top: 10px;
   }
-
   input {
     margin-bottom: 3px;
   }
-
   #old_password {
     margin-bottom: 10px;
   }
