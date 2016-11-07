@@ -7,7 +7,6 @@
             <p>Choose the certification authority (CA) certificate which authenticates the server.</p>
         </div>
     </div>
-
     {% include "server_connections/forms/CaPicker.html" with form=form %}
 
     <div class="row">
@@ -30,7 +29,6 @@
             <p>Choose the certificate which authenticates the remote peer. Only certificates with private key's are shown.</p>
         </div>
     </div>
-
     {% include "server_connections/forms/CertificatePicker.html" with certificate=form.certificate identity=form.identity %}
 
     <div class="row">

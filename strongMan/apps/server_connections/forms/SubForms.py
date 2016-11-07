@@ -330,37 +330,17 @@ class EapForm(forms.Form):
     Form to choose the eap secret.
     """
     secret = SecretChoice(queryset=Secret.objects.none(), label="EAP Secret", required=False)
-    # username = forms.CharField(max_length=50, initial="")
-    # password = forms.CharField(max_length=50, widget=forms.PasswordInput, initial="")
 
     def __init__(self, *args, **kwargs):
         super(EapForm, self).__init__(*args, **kwargs)
         self.fields['secret'].queryset = Secret.objects.all()
-
-    # @property
-    # def my_username(self):
-    #     return self.cleaned_data["username"]
-    #
-    # @my_username.setter
-    # def my_username(self, value):
-    #     self.initial['username'] = value
-    #
-    # @property
-    # def my_password(self):
-    #     return self.cleaned_data["password"]
-    #
-    # @my_password.setter
-    # def my_password(self, value):
-    #     self.initial['password'] = value
 
     def fill(self, connection):
         self.initial['secret'] = connection.pool
         for remote in connection.server_remote.all():
             subclass = remote.subclass()
             if isinstance(subclass, EapAuthentication):
-                self.fields['secret'].initial = subclass.secret
-                # self.fields['username'].initial = subclass.secret.username
-                # self.fields['password'].initial = subclass.secret.password
+                self.initial['secret'] = subclass.secret
 
     def create_connection(self, connection):
         max_round = 0
@@ -368,9 +348,8 @@ class EapForm(forms.Form):
             if remote.round > max_round:
                 max_round = remote.round
 
-        # secret = Secret(username=self.my_username, type='EAP', password=self.my_password)
-        # secret.save()
-        auth = EapAuthentication(name='remote-eap', auth='eap-radius', remote=connection, secret=self.cleaned_data['secret'], round=max_round + 1)
+        auth = EapAuthentication(name='remote-eap', auth='eap-radius', remote=connection,
+                                 secret=self.cleaned_data['secret'], round=max_round + 1)
         auth.save()
 
     def update_connection(self, connection):

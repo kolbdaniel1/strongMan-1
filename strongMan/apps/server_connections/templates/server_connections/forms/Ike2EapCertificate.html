@@ -25,9 +25,11 @@
 
     <div class="row">
         <p class="col-xs-12">Remote settings</p>
+        <div class="col-xs-12">
+            <p>Choose the EAP secret which authenticates the remote peer.</p>
+        </div>
     </div>
-
-    {% include "server_connections/forms/UserPassword.html" with username=form.username password=form.password %}
+    {% include "server_connections/forms/EapSecretPicker.html" with form=form %}
 
     <div class="row">
         <div class="col-xs-12">
