@@ -1,8 +1,7 @@
-from collections import OrderedDict
 from django.db import models
 
-
 ATTRIBUTE_CHOICES = (
+    ('None', 'None'),
     ('dns', 'dns'),
     ('nbns', 'nbns'),
     ('dhcp', 'dhcp'),
@@ -17,7 +16,7 @@ ATTRIBUTE_CHOICES = (
 class Pool(models.Model):
     poolname = models.TextField(unique=True)
     addresses = models.TextField()
-    attribute = models.CharField(max_length=56, choices=ATTRIBUTE_CHOICES, default='0', )
+    attribute = models.CharField(max_length=56, choices=ATTRIBUTE_CHOICES, default='0')
     attributevalues = models.TextField()
 
     @classmethod
@@ -39,3 +38,4 @@ class Pool(models.Model):
     #     return pools
 
     # on delete: pool.related_name.all...
+
