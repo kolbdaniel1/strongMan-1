@@ -17,7 +17,7 @@ ATTRIBUTE_CHOICES = (
 class Pool(models.Model):
     poolname = models.TextField(unique=True)
     addresses = models.TextField()
-    attribute = models.CharField(max_length=56, choices=ATTRIBUTE_CHOICES, default='0')
+    attribute = models.CharField(max_length=56, choices=ATTRIBUTE_CHOICES, default='0', )
     attributevalues = models.TextField()
 
     @classmethod
@@ -30,3 +30,12 @@ class Pool(models.Model):
 
     def __repr__(self):
         return str(self.poolname)
+
+    # def dict(self):
+    #     attributevalues_list = OrderedDict()
+    #     attributevalues_list = 'd'
+    #     pools = OrderedDict(poolname=self.poolname,
+        # addresses=self.addresses, attribute=self.attribute, self.attributevalues)
+    #     return pools
+
+    # on delete: pool.related_name.all...

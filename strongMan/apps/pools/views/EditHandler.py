@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.db import IntegrityError
 from ..forms import AddOrEditForm
 
+
 class EditHandler:
     def __init__(self, request, pool):
         self.form = None
@@ -12,7 +13,10 @@ class EditHandler:
         self.pool = pool
 
     def _render(self, form=AddOrEditForm()):
-        return render(self.request, 'pools/edit.html', {"form": form, "poolname": self.pool.poolname, "addresses": self.pool.addresses})
+        return render(self.request, 'pools/edit.html', {"form": form, "poolname": self.pool.poolname,
+                                                        "addresses": self.pool.addresses,
+                                                        "attribute": self.pool.attribute,
+                                                        "attributevalues": self.pool.attributevalues})
 
     def handle(self):
         if self.request.method == "GET":  # Edit
@@ -21,8 +25,8 @@ class EditHandler:
         elif self.request.method == "POST":
             if "remove_pool" in self.request.POST:
                 self.pool.delete()
-                # evtl remove/load_pool -> daemon
-                messages.add_message(self.request, messages.SUCCESS, 'Successfully deleted pool')
+                # evtl remove/unload_pool -> daemon
+                messages.add_message(self.request, messages.SUCCESS, 'Pool successfully deleted.')
                 return redirect(reverse("pools:index"))
 
             self.form = AddOrEditForm(self.request.POST)
