@@ -1,5 +1,7 @@
 import django_tables2 as tables
 from django.template.loader import render_to_string
+from strongMan.helper_apps.vici.wrapper.wrapper import ViciWrapper
+# from ..forms import OverviewDetailForm
 
 
 class PoolsTable(tables.Table):
@@ -21,7 +23,12 @@ class PoolsTable(tables.Table):
                                 request=self.request)
 
     def render_detail_collapse_column(self, record):
-        return render_to_string('pools/widgets/detail_collapse_column.html', {'record': record},
+        vici_wrapper = ViciWrapper()
+        pools = vici_wrapper.get_pools()
+        # self.detail_table = pools  # tables.DetailPoolTable(pools, request=self.request)
+        # detail_form = OverviewDetailForm(pools)
+        # for item in pools['items']
+        return render_to_string('pools/widgets/detail_collapse_column.html', {'record': record, 'detail': pools},
                                 request=self.request)
 
     class Meta:

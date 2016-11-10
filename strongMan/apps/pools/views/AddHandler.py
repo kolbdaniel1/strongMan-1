@@ -41,7 +41,7 @@ class AddHandler:
             pool.clean()
             pool.save()
             vici = ViciWrapper()
-            vici_pool = {'name': self.form.my_poolname,  'items':
+            vici_pool = {self.form.my_poolname:
                 {'addrs': self.form.my_addresses, self.form.my_attribute: [self.form.my_attributevalues]}}
             vici.session.load_pool(vici_pool)
         except IntegrityError:
