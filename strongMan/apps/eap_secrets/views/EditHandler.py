@@ -10,12 +10,11 @@ from strongMan.helper_apps.vici.wrapper.wrapper import ViciWrapper
 
 class EditHandler:
     def __init__(self, request, secret):
-        self.form = None
         self.request = request
         self.secret = secret
 
-    def _render_edit(self):
-        return render(self.request, 'eap_secrets/edit.html', {"username": self.secret.username, "password": self.secret.password})
+    def _render_edit(self, form=AddOrEditForm()):
+        return render(self.request, 'eap_secrets/edit.html', {"form": form})
 
     def delete_secret(self):
         try:
@@ -28,12 +27,11 @@ class EditHandler:
         return redirect(reverse("eap_secrets:overview"))
 
     def update_secret(self):
-        self.form = AddOrEditForm(self.request.POST)
-        if not self.form.is_valid():
-            messages.add_message(self.request, messages.ERROR, 'A password is required')
-            return self._render_edit()
+        form = AddOrEditForm(self.request.POST)
+        if not form.is_valid():
+            return self._render_edit(form)
         else:
-            self.secret.password = self.form.my_password
+            self.secret.password = form.my_password
             self.secret.save()
             vici = ViciWrapper()
             # vici.clear_creds()
@@ -43,7 +41,10 @@ class EditHandler:
 
     def handle(self):
         if self.request.method == "GET":
-            return self._render_edit()
+            form = AddOrEditForm()
+            form.my_username = self.secret.username
+            form.my_password = self.secret.password
+            return self._render_edit(form)
         elif self.request.method == "POST":
             if "remove_secret" in self.request.POST:
                 return self.delete_secret()
