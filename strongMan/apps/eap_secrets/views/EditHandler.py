@@ -30,12 +30,14 @@ class EditHandler:
     def update_secret(self):
         self.form = AddOrEditForm(self.request.POST)
         if not self.form.is_valid():
-            messages.add_message(self.request, messages.ERROR, 'Form was not valid')
+            messages.add_message(self.request, messages.ERROR, 'A password is required')
             return self._render_edit()
         else:
             self.secret.password = self.form.my_password
             self.secret.save()
-            ViciWrapper().load_secret(self.secret.dict())
+            vici = ViciWrapper()
+            # vici.clear_creds()
+            vici.load_secret(self.secret.dict())
             messages.add_message(self.request, messages.SUCCESS, 'Successfully updated EAP Secret')
             return redirect(reverse("eap_secrets:overview"))
 
