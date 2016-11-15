@@ -185,15 +185,15 @@ class IKEv2CertificateEAP(Connection):
 
 class IKEv2EapTls(Connection):
     LOCAL_AUTH = (
-        ('0', "eap-tls"),
-        ('1', "eap-ttls"),
+        ('eap-tls', "eap-tls"),
+        ('eap-ttls', "eap-ttls"),
     )
     REMOTE_AUTH = (
-        ('0', "eap-tls"),
-        ('1', "eap-ttls"),
+        ('eap-tls', "eap-tls"),
+        ('eap-ttls', "eap-ttls"),
     )
 
-    remote_auth = models.CharField(max_length=1, choices=REMOTE_AUTH, default='0')
+    remote_auth = models.CharField(max_length=56, choices=REMOTE_AUTH, default='0')
 
     @classmethod
     def remote_auth(self):

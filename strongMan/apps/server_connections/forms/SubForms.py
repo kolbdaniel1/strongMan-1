@@ -318,7 +318,7 @@ class EapTlsForm(UserCertificateForm):
             sub = remote.subclass()
             if isinstance(sub, EapTlsAuthentication):
                 sub.identity = self.my_identity
-                sub.remote_auth = self.cleaned_data['remote_auth']
+                sub.auth = self.cleaned_data['remote_auth']
                 sub.save()
 
 
