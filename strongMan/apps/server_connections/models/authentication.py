@@ -104,7 +104,7 @@ class CertificateAuthentication(Authentication):
 
     def get_key_dict(self):
         key = self.identity.subclass().certificate.subclass().private_key
-        return OrderedDict(type=key.get_algorithm_type, data=key.der_container)
+        return OrderedDict(type=key.get_algorithm_type(), data=key.der_container)
 
 
 class EapTlsAuthentication(Authentication):
@@ -126,4 +126,4 @@ class EapTlsAuthentication(Authentication):
 
     def get_key_dict(self):
         key = self.identity.subclass().certificate.subclass().private_key
-        return OrderedDict(type=key.get_algorithm_type, data=key.der_container)
+        return OrderedDict(type=key.get_algorithm_type(), data=key.der_container)
