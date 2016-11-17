@@ -4,9 +4,9 @@ from strongMan.apps.pools.models.pools import ATTRIBUTE_CHOICES
 
 class AddOrEditForm(forms.Form):
     poolname = forms.CharField(max_length=50, initial="")
-    addresses = forms.CharField(max_length=50, initial="")
+    addresses = forms.CharField(initial="")
     attribute = forms.ChoiceField(widget=forms.Select(), choices=ATTRIBUTE_CHOICES)
-    attributevalues = forms.CharField(max_length=50, initial="")
+    attributevalues = forms.CharField(initial="", required=None)
 
     def fill(self, pool):
         self.initial['poolname'] = pool.poolname
@@ -51,7 +51,7 @@ class AddOrEditForm(forms.Form):
 
     @property
     def my_attributevalues(self):
-        return self.cleaned_data["attributevalues"]
+        return self.data["attributevalues"]
 
     @my_attributevalues.setter
     def my_attributevalues(self, value):

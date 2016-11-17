@@ -34,17 +34,12 @@ class EditHandler:
             self.form = AddOrEditForm(self.parameter_dict)
             vici = ViciWrapper()
             if "remove_pool" in self.request.POST:
-
                 vici_poolname = {'name': self.poolname}
                 try:
-                    success = vici.session.unload_pool(vici_poolname)
+                    vici.unload_pool(vici_poolname)
                     self.pool.delete()
-                    if success:
-                        messages.add_message(self.request, messages.SUCCESS,
-                                             'Pool successfully deleted.')
-                    else:
-                        messages.add_message(self.request, messages.ERROR,
-                                             'Unload pool failed.')
+                    messages.add_message(self.request, messages.SUCCESS, "Pool deletion successful.")
+
                 except ViciException:
                     messages.add_message(self.request, messages.ERROR,
                                          'Unload pool failed. (ViciException)')
