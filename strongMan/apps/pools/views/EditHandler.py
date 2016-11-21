@@ -76,9 +76,9 @@ class EditHandler:
             self.pool.delete()
             messages.add_message(self.request, messages.SUCCESS, "Pool deletion successful.")
 
-        except ViciException:
+        except ViciException as e:
             messages.add_message(self.request, messages.ERROR,
-                                 'Unload pool failed. (ViciException). There could be online leases.')
+                                 'Unload pool failed: ' + e)
         except ProtectedError:
             messages.add_message(self.request, messages.ERROR,
                                  'Pool not deleted. Pool is in use by a connection.')
