@@ -39,8 +39,6 @@ class Connection(models.Model):
         ike_sa['version'] = self.version
         ike_sa['proposals'] = [proposal.type for proposal in self.server_proposals.all()]
         ike_sa['children'] = children
-        ike_sa['local_ts'] = [local_ts.value for local_ts in children.server_local_ts.all()]
-        ike_sa['remote_ts'] = [remote_ts.value for remote_ts in children.server_remote_ts.all()]
 
         for local in self.server_local.all():
             local = local.subclass()
@@ -72,10 +70,10 @@ class Connection(models.Model):
             if remote.has_private_key():
                 vici_wrapper.load_key(remote.get_key_dict())
 
-        for child in self.server_children.all():
-            logs = vici_wrapper.initiate(child.name, self.profile)
-            for log in logs:
-                LogMessage(connection=self, message=log['message']).save()
+        # for child in self.server_children.all():
+        #     logs = vici_wrapper.initiate(child.name, self.profile)
+        #     for log in logs:
+        #         LogMessage(connection=self, message=log['message']).save()
 
     def stop(self):
         self.enabled = False
