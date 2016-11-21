@@ -30,8 +30,8 @@ class AddHandler:
 
         if self.form.my_poolname.lower() == 'dhcp' or self.form.my_poolname.lower() == 'radius':
             messages.add_message(self.request, messages.ERROR,
-                                 'Poolname ' + self.form.my_poolname + ' not allowed in pool creation. '
-                                 'To use these, please reference it directly from the connection wizard.')
+                                 'Poolname "' + self.form.my_poolname + '" not allowed in pool creation. '
+                                 'To use this name, please reference it directly from the connection wizard.')
             return render(self.request, 'pools/add.html', {"form": self.form})
 
         else:
