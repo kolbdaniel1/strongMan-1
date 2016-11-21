@@ -41,10 +41,18 @@ class EditHandler:
             return render(self.request, 'pools/edit.html', {"form": self.form})
         else:
             if self.form.my_attribute == 'None':
+                if self.form.my_attributevalues != "":
+                    messages.add_message(self.request, messages.ERROR,
+                                         'Won\'t update: Attribute values unclear for Attribute "None"')
+                    return render(self.request, 'pools/edit.html', {"form": self.form})
                 vici_pool = {self.form.my_poolname: {'addrs': self.form.my_addresses}}
-                msg = 'Successfully updated pool, but Attributevalue(s) not set. (Attribute was "None")'
+                msg = 'Successfully updated pool'
 
             else:
+                if self.form.my_attributevalues == "":
+                    messages.add_message(self.request, messages.ERROR,
+                                         'Won\'t update: Attribute values mandatory if attribute is set.')
+                    return render(self.request, 'pools/edit.html', {"form": self.form})
                 vici_pool = {'name': self.form.my_poolname, 'items':
                     {'addrs': self.form.my_addresses, self.form.my_attribute: [self.form.my_attributevalues]}}
                 msg = 'Successfully updated pool'
@@ -55,8 +63,7 @@ class EditHandler:
                 self.pool.save()
                 messages.add_message(self.request, messages.SUCCESS, msg)
             except ViciException as e:
-                messages.add_message(self.request, messages.ERROR,
-                                     'Load pool failed:' + str(e))
+                messages.add_message(self.request, messages.ERROR, str(e))
                 return render(self.request, 'pools/edit.html', {"form": self.form})
 
             return redirect(reverse("pools:index"))

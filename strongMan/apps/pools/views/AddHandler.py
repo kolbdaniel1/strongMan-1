@@ -29,9 +29,17 @@ class AddHandler:
             return render(self.request, 'pools/add.html', {"form": self.form})
 
         if self.form.my_attribute == 'None':
+            if self.form.my_attributevalues != "":
+                messages.add_message(self.request, messages.ERROR,
+                                     'Can\'t add pool: Attribute values unclear for Attribute "None"')
+                return render(self.request, 'pools/add.html', {"form": self.form})
             pool = Pool(poolname=self.form.my_poolname, addresses=self.form.my_addresses)
             vici_pool = {self.form.my_poolname: {'addrs': self.form.my_addresses}}
         else:
+            if self.form.my_attributevalues == "":
+                messages.add_message(self.request, messages.ERROR,
+                                     'Can\'t add pool: Attribute values mandatory if attribute is set.')
+                return render(self.request, 'pools/add.html', {"form": self.form})
             attr = self.form.my_attribute
             pool = Pool(poolname=self.form.my_poolname, addresses=self.form.my_addresses,
                         attribute=attr,
