@@ -95,7 +95,7 @@
                     {#% endif %#}
                     {% for choice in form.pool.field.queryset %}
                         <option value="{{ choice.id }}"
-                                {% if form.pool.value|slugify == choice.id|slugify %}
+                                {% if form.pool.value|slugify == choice.id|slugify or form.pool.value == None and choice.id == "Nothing selected" %}
                                 selected="selected"{% endif %}>{{ choice }}</option>
                     {% endfor %}
                 </select>
