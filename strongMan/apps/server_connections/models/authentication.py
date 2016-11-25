@@ -59,10 +59,11 @@ class CaCertificateAuthentication(Authentication):
     def dict(self):
         auth = super(CaCertificateAuthentication, self).dict()
         parameters = auth[self.name]
-        if self.ca_cert.is_CA:
-            parameters['cacerts'] = [self.ca_cert.der_container]
-        else:
-            parameters['certs'] = [self.ca_cert.der_container]
+        if self.ca_cert is not None:
+            if self.ca_cert.is_CA:
+                parameters['cacerts'] = [self.ca_cert.der_container]
+            else:
+                parameters['certs'] = [self.ca_cert.der_container]
         if self.ca_identity is not "":
             parameters['id'] = self.ca_identity
         return auth
