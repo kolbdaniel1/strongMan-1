@@ -3,9 +3,6 @@
 <div class="old table-container">
     {% block table %}
         <table{% if table.attrs %} {{ table.attrs.as_html }}{% endif %} id="poolTable">
-
-
-
             {% block table.thead %}
                 {% if table.show_header %}
                     <thead>
@@ -27,7 +24,7 @@
                 <tbody>
                 {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
                     {% block table.tbody.row %}
-                        <tr class="{% cycle 'even' 'odd' %} accordion-toggle" data-toggle="collapse" data-target="#collapse">
+                        <tr class="{% cycle 'even' 'odd' %} accordion-toggle" data-toggle="collapse">
                             {% for column, cell in row.items %}
                                 <td {{ column.attrs.td.as_html }}>
                                     {% if column.localize == None %}{{ cell }}{% else %}{% if column.localize %}
@@ -35,7 +32,31 @@
                                 </td>
                             {% endfor %}
                         </tr>
-
+                        <tr id="collapse{{ row.record.poolname }}" class="collapse" >
+                            <td colspan="4" >
+                                {% for key, value in table.pools.items %}
+                                    {% if row.record.poolname == key %}
+                                        <b>Attribute:</b> {{ row.record.attribute }}<br />
+                                        <b>Attributevalue(s):</b> {{ row.record.attributevalues }}<br />
+                                        <b>Nof addresses in pool:</b> {{ value.size }}<br />
+                                        <b>Virtual IP pool base addr:</b> {{ value.base }}<br />
+                                        <b># of online:</b> {{ value.online }}<br />
+                                        <b># of offline:</b> {{ value.offline }}<br />
+                                        <b>Leases in pool:</b>
+                                            {% if value.leases %}
+                                                {%  for k, v in  value.leases.items %}
+                                                    Address: {{ v.address }}<br />
+                                                    Identity: {{ v.identity }}<br />
+                                                    Status: {{ v.status }}<br />
+                                                {% endfor %}
+                                            {% else %}
+                                                No leases.
+                                            {% endif %}
+                                            {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+{#                        </div>#}
 {#                         <tr >#}
 {#                            <div id="collapse{{ record.poolname }}" class="collapse indent">#}
 {#                                <h4>{{ record.poolname }}</h4>#}
