@@ -36,24 +36,31 @@
                             <td colspan="4" >
                                 {% for key, value in table.pools.items %}
                                     {% if row.record.poolname == key %}
-                                        <b>Attribute:</b> {{ row.record.attribute }}<br />
-                                        <b>Attributevalue(s):</b> {{ row.record.attributevalues }}<br />
-                                        <b>Nof addresses in pool:</b> {{ value.size }}<br />
-                                        <b>Virtual IP pool base addr:</b> {{ value.base }}<br />
-                                        <b># of online:</b> {{ value.online }}<br />
-                                        <b># of offline:</b> {{ value.offline }}<br />
-                                        <b>Leases in pool:</b>
-                                            {% if value.leases %}
-                                                {%  for k, v in  value.leases.items %}
-                                                    Address: {{ v.address }}<br />
-                                                    Identity: {{ v.identity }}<br />
-                                                    Status: {{ v.status }}<br />
-                                                {% endfor %}
-                                            {% else %}
-                                                No leases.
-                                            {% endif %}
-                                            {% endif %}
+                                        <table>
+
+
+                                                <tr><td><b>Attribute:</b></td> <td> {{ row.record.attribute }}<br /></td></tr>
+                                                <tr><td><b>Attributevalue(s):</b> </td> <td> {{ row.record.attributevalues }}<br /></td></tr>
+                                                <tr><td><b>Nof addresses in pool:</b> </td> <td> {{ value.size }}<br /></td></tr>
+                                                <tr><td><b>Virtual IP pool base addr:</b> </td> <td> {{ value.base }}<br /></td></tr>
+                                                <tr><td><b># of online:</b> </td> <td> {{ value.online }}<br /></td></tr>
+                                                <tr><td><b># of offline:</b> </td> <td> {{ value.offline }}<br /></td></tr>
+                                                <tr><td><b>Leases in pool:</b> </td> <td>
+                                                    {% if value.leases %}
+                                                        {%  for k, v in  value.leases.items %}
+                                                            <tr><td>Address: </td> <td>{{ v.address }}<br /></td></tr>
+                                                            <tr><td>Identity: </td> <td>{{ v.identity }}<br /></td></tr>
+                                                            <tr><td>Status: </td> <td>{{ v.status }}<br /></td></tr>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        No leases.
+                                                    {% endif %}
+                                            </td></tr>
+                                        </table>
+                                    {% endif %}
+
                                 {% endfor %}
+
                             </td>
                         </tr>
 {#                        </div>#}

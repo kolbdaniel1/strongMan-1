@@ -1,17 +1,12 @@
 import django_tables2 as tables
 from django.template.loader import render_to_string
-from strongMan.helper_apps.vici.wrapper.wrapper import ViciWrapper
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
 
 
 class PoolsTable(tables.Table):
-
+    detail_collapse_column = tables.Column(accessor="id", verbose_name="", orderable=False)
     poolname = tables.Column(accessor="poolname", verbose_name="Name")
     addresses = tables.Column(accessor="addresses", verbose_name="Addresses")
     removebtn = tables.Column(accessor="id", verbose_name='Remove Pool', orderable=False)
-    detail_collapse_column = tables.Column(accessor="id", verbose_name="", orderable=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
