@@ -52,8 +52,8 @@ class EditHandler:
                     messages.add_message(self.request, messages.ERROR,
                                          'Won\'t update: Attribute values mandatory if attribute is set.')
                     return render(self.request, 'pools/edit.html', {"form": self.form})
-                vici_pool = {'name': self.form.my_poolname, 'items':
-                    {'addrs': self.form.my_addresses, self.form.my_attribute: [self.form.my_attributevalues]}}
+                vici_pool = {self.form.my_poolname: {'addrs': self.form.my_addresses,
+                                                     self.form.my_attribute: [self.form.my_attributevalues]}}
             msg = 'Successfully updated pool'
 
             try:
