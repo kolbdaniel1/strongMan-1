@@ -51,7 +51,7 @@
             <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li class="client-mode" ><a href="{% url "connections:index" %}">Connections</a></li>
-                        <li class="" ><a href="{% url "certificates:overview" %}">Certificates</a></li>
+                        <li><a href="{% url "certificates:overview" %}">Certificates</a></li>
                         <li class="server-mode" ><a href="{% url "server_connections:index" %}">Server Connections</a></li>
                         <li class="server-mode" ><a href="{% url "eap_secrets:overview" %}">EAP Secrets</a></li>
                         <li class="server-mode" ><a href="{% url "pools:index" %}">Pools</a></li>
@@ -153,17 +153,20 @@
             $('#myModal').on('shown.bs.modal', function () {
                 $('#old_password').focus()
             })
+            $(document).ready(function() {
+                loadCurrentMode()
+            })
         </script>
     </div>
 
 </body>
 </html>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        loadCurrentMode()
-    })
-</script>
+{#<script type="text/javascript">#}
+{#    $(document).ready(function() {#}
+{#        loadCurrentMode()#}
+{#    })#}
+{#</script>#}
 
 
 
