@@ -3,39 +3,29 @@
 <div class="old table-container">
     {% block table %}
         <div class="well" style="margin-top: 24px">
-        <table class="table-hover table-condensed table-responsive" style="width: 100%">
-            <thead>
-                <tr>
-                    <th>ike id</th>
-                    <th>Name</th>
-                    <th>Remote address</th>
-                    <th>esp proposal</th>
-                    <th>remote ts</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input class="form-control input-sm" type="text" placeholder="ike id"></td>
-                    <td><input class="form-control input-sm" type="text" placeholder="Name"></td>
-                    <td><input class="form-control input-sm" type="text" placeholder="Remote address"></td>
-                    <td><input class="form-control input-sm" type="text" placeholder="esp proposal"></td>
-                    <td><input class="form-control input-sm" type="text" placeholder="remote ts"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><button type="button" class="btn btn-default btn-sm">search</button></td>
-                </tr>
-            </tbody>
-        </table>
+            <table class="table-hover table-condensed table-responsive" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th>Remote host</th>
+                        <th>Remote ID</th>
+                        <th>Remote ts</th>
+                        <th>Local ts</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input class="form-control input-sm" type="search" placeholder="Remote host"></td>
+                        <td><input class="form-control input-sm" type="text" placeholder="Remote ID"></td>
+                        <td><input class="form-control input-sm" type="text" placeholder="Remote ts"></td>
+                        <td><input class="form-control input-sm" type="text" placeholder="Local ts"></td>
+                        <td><button type="button" class="btn btn-default btn-sm">search</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-
-
-        <table{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
+        <table id="connections-table" {% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
             {% block table.thead %}
                 {% if table.show_header %}
                     <thead>
@@ -73,117 +63,15 @@
                                         <table class="table-hover table-condensed table-responsive" style="width: 100%">
                                             <thead>
                                                 <tr>
-                                                    <th>ike id</th>
-                                                    <th>Name</th>
-                                                    <th>Remote address</th>
-                                                    <th>esp proposal</th>
-                                                    <th>remote ts</th>
-                                                    <th>installed</th>
-                                                    <th>data in</th>
-                                                    <th>data out</th>
+                                                    <th>Ike SA id {% csrf_token %}</th>
+                                                    <th>Remote host</th>
+                                                    <th>Remote ID</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>#1</td>
-                                                    <td>home</td>
-                                                    <td>10.3.1.45</td>
-                                                    <td>aes128gcm-modp2048</td>
-                                                    <td>10.1.0.0/16</td>
-                                                    <td>2478s ago</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td><button type="button" class="btn btn-danger">delete</button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>#2</td>
-                                                    <td>home</td>
-                                                    <td>10.3.1.45</td>
-                                                    <td>aes128gcm-modp2048</td>
-                                                    <td>10.1.0.0/16</td>
-                                                    <td>2478s ago</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td><button type="button" class="btn btn-danger">delete</button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>#3</td>
-                                                    <td>home</td>
-                                                    <td>10.3.1.45</td>
-                                                    <td>aes128gcm-modp2048</td>
-                                                    <td>10.1.0.0/16</td>
-                                                    <td>2478s ago</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td><button type="button" class="btn btn-danger">delete</button></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>#4</td>
-                                                    <td>home</td>
-                                                    <td>10.3.1.45</td>
-                                                    <td>aes128gcm-modp2048</td>
-                                                    <td>10.1.0.0/16</td>
-                                                    <td>2478s ago</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td>0 bytes<br>0 packets</td>
-                                                    <td><button type="button" class="btn btn-danger">delete</button></td>
-                                                </tr>
-                                            </tbody>
+                                            <tbody id="connection-{{ row.record.id }}-sas"></tbody>
                                         </table>
-
-                                        <!--<div class="col-sm-6">
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        <i class="fa fa-desktop" aria-hidden="True"></i>
-                                                        Local selectors:
-                                                    </td>
-                                                    <td id="local-ts-{{ row.record.id }}">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="min-width: 140px;">
-                                                        <i class="fa fa-server" aria-hidden="true"></i>
-                                                        Remote selectors:
-                                                    </td>
-                                                    <td id="remote-ts-{{ row.record.id }}">
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                                                        In:
-                                                    </td>
-                                                    <td>
-                                                        <div id="packets-in-{{ row.record.id }}"></div>
-                                                        Packets totaling
-                                                        <div id="bytes-in-{{ row.record.id }}"></div>
-                                                        Bytes
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="min-width: 50px;">
-                                                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Out:
-                                                    </td>
-                                                    <td>
-                                                        <div id="packets-out-{{ row.record.id }}"></div>
-                                                        Packets totaling
-                                                        <div id="bytes-out-{{ row.record.id }}"></div>
-                                                        Bytes
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
                                     </div>
-                                    <div class="panel-footer" style="width:100%;">
-                                        <i class="fa fa-exchange" aria-hidden="true"></i> Traffic
-                                    </div>-->
-
                                 </div>
                             </td>
 
@@ -255,3 +143,8 @@
         {% endwith %}
     {% endif %}
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#connections-table').filterTable();
+    });
+</script>
