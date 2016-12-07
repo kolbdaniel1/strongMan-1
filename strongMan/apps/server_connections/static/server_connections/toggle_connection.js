@@ -367,9 +367,8 @@ function generate_entries(conn_id, rows, child) {
             cell_button_terminate_child_sa.appendChild(form_terminate_child_sa);
             child_row.appendChild(cell_button_terminate_child_sa);
 
-
+            table.appendChild(child_row);
         }
-        table.appendChild(child_row);
 
         cell_child_sas.appendChild(table);
 
