@@ -126,10 +126,10 @@ function setConnectionInfo(connectionId, csrf) {
         success: function (response) {
             if (response.success) {
                 fillConnectionInfo(connectionId, response.child);
-                setTimeout(function () {
-                    setConnectionInfo(connectionId, csrf)
-                }, 10000);
             }
+            setTimeout(function () {
+                setConnectionInfo(connectionId, csrf)
+            }, 10000);
         }
     });
 }
