@@ -1,0 +1,20 @@
+<div id="grow" class="collapsepool">
+    <a for="collapse{{ record.poolname }}" role="button" data-toggle="collapse"
+       href="#collapse{{ record.poolname }}" aria-expanded="false" aria-controls="collapse{{ record.poolname }}"
+         class="accordion-toggle collapsed"></a>
+
+</div>
+
+{#<script>#}
+{#    $(document).ready(setInterval(function () { autoloadpage(); }, 6000) )#}
+{#    function autoloadpage() {#}
+{#    var poolname = {{ record.poolname }};#}
+{#        $.ajax({#}
+{#            url: "/pools",#}
+{#            type: "GET",#}
+{#            success: function() {#}
+{#                $("div#collapse"+poolname).html();#}
+{#            }#}
+{#        });#}
+{#    }#}
+{#</script>#}

@@ -1,0 +1,234 @@
+{% load connections_extras %}
+<div id="ConnectionForm">
+    <div class="row">
+        <p class="col-xs-12">Your chosen authentication method.</p>
+        <label class="control-label col-sm-3 col-xs-12" for="label_form_name">Method</label>
+        {% if connection %}
+            <div class="controls col-sm-8 col-xs-9">
+        {% else %}
+            <div class="controls col-sm-6 col-xs-8">
+        {% endif %}
+            <select class="form-control" name="form_name" id="select_form_name" disabled="True">
+                <option>{{ form.model.choice_name }}</option>
+            </select>
+        </div>
+        <div class="col-sm-2 col-xs-2">
+            {% if not connection %}
+                <span title="Change authentication method">
+                    <a class="btn btn-default" onclick="on_change_method_btn_click()" id="change_method_btn">
+                        <i class="fa fa-pencil" aria-hidden="true"></i><span> Change</span>
+                    </a>
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="current_form" value="{{ form|classname }}"/>
+        <input type="hidden" name="refresh_choices" value="False" id="refresh_choices"/>
+        <div class="row">
+            <p class="col-xs-12">Name your connection so you can recognize it.</p>
+            <label class="control-label col-sm-3 col-xs-12">Name</label>
+            <div class="controls col-sm-8 col-xs-10">
+                <input type="text" class="form-control" name="profile" value="{{ form.profile.value }}"
+                       placeholder="Name your connection"/>
+                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.profile %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="Name help" content="This is the name of the connection. The name appears as the main identifier in strongMan and also in strongSwan." %}
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="control-label col-sm-3 col-xs-12">IKE Version</label>
+            <div class="controls col-sm-8 col-xs-10" name="version">
+                {% for choice in form.version.field.choices %}
+                  <label class="radio-inline">
+                    <input type="radio" name="version" value="{{choice.0}}"
+                      {% ifequal form.version.value choice.0 %}
+                         checked="checked"
+                      {% endifequal %}/>
+                    {{choice.1}}
+                  </label>
+                {% endfor %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="IKE help" content="IKE Version." %}
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="control-label col-sm-3 col-xs-12">Server Address</label>
+            <div class="controls col-sm-8 col-xs-10">
+                <input type="text" class="form-control" name="local_addrs" value="{{ form.local_addrs.value }}"
+                       placeholder="Server Hostname or IP" id="local_addrs"/>
+                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.local_addrs %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="Server address help" content="The local server endpoint of the vpn connection. Enter either a domain name like 'vpn.myenterprise.com' or a IP like '86.12.24.212'." %}
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="control-label col-sm-3 col-xs-12">Remote Address</label>
+            <div class="controls col-sm-8 col-xs-10">
+                <input type="text" class="form-control" name="remote_addrs" value="{{ form.remote_addrs.value }}"
+                       placeholder="Remote Hostname or IP" id="remote_addrs"/>
+                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.remote_addrs %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="Remote address help" content="The remote endpoint of the vpn connection. Enter either a domain name like 'vpn.myenterprise.com' or a IP like '86.12.24.212'." %}
+            </div>
+        </div>
+
+{#        <div class="row picker">#}
+{#            <label class="control-label col-sm-3 col-xs-12">{{ form.pool.label }}</label>#}
+{#            <div class="controls col-sm-8 col-xs-10">#}
+{#                <select class="selectpicker" data-live-search="true"#}
+{#                        name="{{ form.pool.name }}"#}
+{#                        id="id_{{ form.pool.name }}" data-show-subtext="True">#}
+{#                    <option value="">{{ form.fields.pool.empty_label }}</option>#}
+{#                    {% for choice in form.pool.field.queryset %}#}
+{#                        <option value="{{ choice.id }}"#}
+{#                                {% if form.pool.value|slugify == choice.id|slugify %}#}
+{#                                selected="selected"{% endif %}>{{ choice }}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.pool %}#}
+{#            </div>#}
+{#            <div class="col-sm-1 col-xs-2">#}
+{#                {% include "server_connections/widgets/QuestionPopover.html" with title="Pools help" content="Select a pool." %}#}
+{#            </div>#}
+{#            <div class="col-sm-11 col-xs-10">#}
+{#                <div class="pull-right">#}
+{#                    <a data-toggle="modal" data-target="#AddPoolModal">Upload new Pool</a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#        <div class="modal fade" id="AddPoolModal" tabindex="-1" role="dialog">#}
+{#            <div class="modal-dialog" role="document">#}
+{#                <div class="modal-content">#}
+{#                    <div class="modal-header">#}
+{#                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
+{#                                aria-hidden="true">&times;</span></button>#}
+{#                        <h4 class="modal-title" id="myModalLabel">Upload Pool</h4>#}
+{#                    </div>#}
+{#                    <div class="modal-body text-center">#}
+{#                        <iframe src="{% url "pools:add_form" %}" frameborder="0"#}
+{#                                style="width: 100%; height: 600px;"></iframe>#}
+{#                        <button type="button" class="btn btn-primary" data-dismiss="modal">Finish</button>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+        {% include "server_connections/forms/PoolPicker.html" with pool=form.pool%}
+
+        <div class="row">
+            <label class="control-label col-sm-3 col-xs-12">Send Certificate Request</label>
+            <div class="controls col-sm-8 col-xs-10">
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="send_certreq" {% if form.send_certreq.value == True %}
+                             checked="checked"
+                        {% endif %}>Send certificate request
+                </label>
+                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.send_certreq %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="Certificate request help" content="Select if certificate request is enabled." %}
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="control-label col-sm-3 col-xs-12">Start Action</label>
+            <div class="controls col-sm-8 col-xs-10">
+                <select class="selectpicker" name="start_action">
+                    {% for choice in form.start_action.field.choices %}
+                        <option value="{{choice.0}}"
+                            {% ifequal form.start_action.value|slugify choice.0|slugify %}selected="selected"{% endifequal %}>
+                            {{choice.1}}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.start_action %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="Start Action" content="Select Start Action for this connection." %}
+            </div>
+        </div>
+
+        <hr>
+
+        {% block form_content %}{% endblock form_content %}
+
+        <div class="row">
+            <p class="col-xs-12">Traffic selectors</p>
+            <label class="control-label col-sm-3 col-xs-12">Local trafic selector</label>
+            <div class="controls col-sm-8 col-xs-10">
+                <input type="text" class="form-control" name="local_ts" value="{{ form.local_ts.value }}"
+                       placeholder="Local traffic selector" id="local_ts"/>
+                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.local_ts %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="help" content="" %}
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="control-label col-sm-3 col-xs-12">Remote trafic selector</label>
+            <div class="controls col-sm-8 col-xs-10">
+                <input type="text" class="form-control" name="remote_ts" value="{{ form.remote_ts.value }}"
+                       placeholder="Remote traffic selector" id="remote_ts"/>
+                {% include "server_connections/forms/../widgets/errormsg.html" with field=form.remote_ts %}
+            </div>
+            <div class="col-sm-1 col-xs-2">
+                {% include "server_connections/widgets/QuestionPopover.html" with title="help" content="" %}
+            </div>
+        </div>
+
+        <div class="pull-right">
+            {% if connection %}
+                {% if connection.state == 'DOWN' or connection.state == 'UNLOADED' %}
+                    <span title="Remove connection">
+                    <a href="{% url 'server_connections:delete' connection.id %}"
+                       id="delete-{{ connection.id }}"
+                       class="btn btn-default white-background black remove-btn">
+                        <span class="glyphicon glyphicon-remove"></span> <span
+                            class="removebtn-text">Remove</span>
+                    </a>
+                </span>
+                {% endif %}
+            {% endif %}
+
+            {% if connection and connection.state == 'DOWN' or connection and connection.state == 'UNLOADED' or not connection %}
+                <button type="submit" name="save" id="configuration"
+                        class="btn btn-primary"><span
+                        class="glyphicon glyphicon-floppy-disk"></span> Save
+                </button>
+            {% endif %}
+
+        </div>
+    </form>
+    <script>
+        $(".remove-btn").click(function () {
+            btn = $(this);
+            if (btn.hasClass('btn-default')) {
+                btn.removeClass('btn-default').addClass('btn-danger');
+                btn.children('.removebtn-text').text('Remove connection');
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        on_change_method_btn_click = function () {
+            if (confirm('Are you sure you want to change the authentication method? All inputs will be lost.')) {
+                window.location.replace("");
+            }
+        }
+    </script>
+</div>
