@@ -24,7 +24,7 @@ def load_keys(vici=ViciWrapper()):
 
 def load_certificates(vici=ViciWrapper()):
     for cert in Certificate.objects.all():
-        vici.load_certificate(OrderedDict(type=cert.get_algorithm_type(), flag='None', data=cert.der_container))
+        vici.load_certificate(OrderedDict(type=cert.type, flag='None', data=cert.der_container))
 
 
 def load_connections():
@@ -49,7 +49,7 @@ def load_credentials(vici=ViciWrapper()):
 
 def main():
     vici = ViciWrapper()
-    load_secrets(vici)
+    load_credentials(vici)
     load_pools(vici)
     load_connections()
 
