@@ -24,7 +24,7 @@ class Connection(models.Model):
     )
 
     profile = models.TextField(unique=True)
-    version = models.CharField(max_length=1, choices=VERSION_CHOICES, default='2')
+    version = models.CharField(max_length=1, choices=VERSION_CHOICES, default=None)
     pool = models.ForeignKey(Pool, null=True, blank=True, default=None, related_name='server_pool')
     send_certreq = models.NullBooleanField(null=True, blank=True, default=None)
     enabled = models.BooleanField(default=False)
@@ -39,14 +39,20 @@ class Connection(models.Model):
         ike_sa = OrderedDict()
         if self.pool is not None:
             ike_sa['pools'] = [self.pool.poolname]
-        ike_sa['local_addrs'] = [local_address.value for local_address in self.server_local_addresses.all()]
+
+        local_address = [local_address.value for local_address in self.server_local_addresses.all()]
+        if local_address[0] is not '':
+            ike_sa['local_addrs'] = local_address
         remote_address = [remote_address.value for remote_address in self.server_remote_addresses.all()]
         if remote_address[0] is not '':
             ike_sa['remote_addrs'] = remote_address
         ike_sa['version'] = self.version
         ike_sa['proposals'] = [proposal.type for proposal in self.server_proposals.all()]
         ike_sa['children'] = children
-        ike_sa['send_certreq'] = self.send_certreq
+        if self.send_certreq == '1':
+            ike_sa['send_certreq'] = 'yes'
+        else:
+            ike_sa['send_certreq'] = 'no'
 
         for local in self.server_local.all():
             local = local.subclass()

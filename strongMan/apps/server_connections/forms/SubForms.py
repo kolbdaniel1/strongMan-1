@@ -13,7 +13,7 @@ class HeaderForm(forms.Form):
     local_addrs = forms.CharField(max_length=50, initial="", required=False)
     remote_addrs = forms.CharField(max_length=50, initial="", required=False)
     version = forms.ChoiceField(widget=forms.RadioSelect(), choices=Connection.VERSION_CHOICES, initial='2')
-    send_certreq = forms.BooleanField(required=False)
+    send_certreq = forms.BooleanField(initial=True, required=False)
     local_ts = forms.CharField(max_length=50, initial="", required=False)
     remote_ts = forms.CharField(max_length=50, initial="", required=False)
     start_action = forms.ChoiceField(widget=forms.Select(), choices=Child.START_ACTION_CHOICES, required=False)
