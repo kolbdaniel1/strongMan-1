@@ -225,9 +225,9 @@ class ViciWrapper:
         except Exception as e:
             return default_state
 
-    def get_pools(self):
+    def get_pools(self, include_leases):
         try:
-            return self.session.get_pools({'leases': "yes"})
+            return self.session.get_pools(include_leases)
         except:
             return self.session.get_pools()
 
