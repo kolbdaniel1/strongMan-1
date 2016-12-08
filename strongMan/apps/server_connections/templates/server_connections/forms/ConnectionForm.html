@@ -37,6 +37,7 @@
 
     <form action="" method="post">
         {% csrf_token %}
+        <input type="hidden" name="connection_type" value="{{ form.connection_type }}"/>
         <input type="hidden" name="current_form" value="{{ form|classname }}"/>
         <input type="hidden" name="refresh_choices" value="False" id="refresh_choices"/>
         <div class="row">
