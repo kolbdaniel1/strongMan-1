@@ -10,17 +10,18 @@
                 <tr><td><b>Virtual IP pool base address:</b> </td> <td> {{ val.base }}<br /></td></tr>
                 <tr><td><b># of online:</b> </td> <td> {{ val.online }}<br /></td></tr>
                 <tr><td><b># of offline:</b> </td> <td> {{ val.offline }}<br /></td></tr>
-                <tr><td><b>Leases in {{ key }}:</b> </td> <td>
-                    {% if val.leases %}
-                        {%  for k, v in  val.leases.items %}
-                            <tr><td>Address: </td> <td>{{ v.address }}<br /></td></tr>
-                            <tr><td>Identity: </td> <td>{{ v.identity }}<br /></td></tr>
-                            <tr><td>Status: </td> <td>{{ v.status }}<br /></td></tr>
-                        {% endfor %}
-                    {% else %}
-                        No leases.
-                    {% endif %}
-                </td></tr>
+                {% if 'leases' in val %}
+                    <tr><td><b>Leases in {{ key }}:</b> </td>
+                    <td>
+                        {% ifequal val.leases|length 0 %}
+                            No leases.
+                        {% else %}
+                            {%  for k, v in  val.leases.items %}
+                                <tr><td>{{ v.identity }}</td><td>{{ v.address }}, {{ v.status }} </td></tr>
+                            {% endfor %}
+                        {% endifequal %}
+                    </td></tr>
+                {% endif %}
             </tbody>
         </table>
     {% endif %}
