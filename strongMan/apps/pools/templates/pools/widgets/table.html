@@ -35,11 +35,7 @@
 
                         <tr id="collapse{{ row.record.poolname }}" class="collapse refreshpools" >
                             <td colspan="4">
-{#                                {% for key, value in table.pools.items %}#}
-{#                                    {% if row.record.poolname == key %}#}
                                 {% include "pools/widgets/detailPoolTable.html" with record=row.record %}
-{#                                    {% endif %}#}
-{#                                {% endfor %}#}
                             </td>
                         </tr>
 
