@@ -29,6 +29,7 @@ class Connection(models.Model):
     send_certreq = models.NullBooleanField(null=True, blank=True, default=None)
     enabled = models.BooleanField(default=False)
     connection_type = models.TextField()
+    initiate = models.NullBooleanField(null=True, blank=True, default=None)
 
     def dict(self):
         children = OrderedDict()
@@ -36,7 +37,8 @@ class Connection(models.Model):
             children[child.name] = child.dict()
 
         ike_sa = OrderedDict()
-        ike_sa['pools'] = [self.pool.poolname]
+        if self.pool is not None:
+            ike_sa['pools'] = [self.pool.poolname]
         ike_sa['local_addrs'] = [local_address.value for local_address in self.server_local_addresses.all()]
         remote_address = [remote_address.value for remote_address in self.server_remote_addresses.all()]
         if remote_address[0] is not '':
