@@ -226,7 +226,10 @@ class ViciWrapper:
             return default_state
 
     def get_pools(self):
-        return self.session.get_pools()
+        try:
+            return self.session.get_pools({'leases': "yes"})
+        except:
+            return self.session.get_pools()
 
     def unload_pool(self, pool_name):
         try:
