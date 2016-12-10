@@ -39,7 +39,6 @@ class Connection(models.Model):
         ike_sa = OrderedDict()
         if self.pool is not None:
             ike_sa['pools'] = [self.pool.poolname]
-
         local_address = [local_address.value for local_address in self.server_local_addresses.all()]
         if local_address[0] is not '':
             ike_sa['local_addrs'] = local_address
@@ -86,11 +85,12 @@ class Connection(models.Model):
 
     def start(self):
         self.load()
-        vici_wrapper = ViciWrapper()
-        for child in self.server_children.all():
-            logs = vici_wrapper.initiate(child.name, self.profile)
-            for log in logs:
-                LogMessage(connection=self, message=log['message']).save()
+        if self.initiate:
+            vici_wrapper = ViciWrapper()
+            for child in self.server_children.all():
+                logs = vici_wrapper.initiate(child.name, self.profile)
+                for log in logs:
+                    LogMessage(connection=self, message=log['message']).save()
 
     def unload(self):
         self.enabled = False
@@ -139,9 +139,9 @@ class Connection(models.Model):
 
     @property
     def state(self):
-        if self.is_remote_access():
+        vici_wrapper = ViciWrapper()
+        if self.is_remote_access() or self.is_site_to_site() and not self.initiate:
             try:
-                vici_wrapper = ViciWrapper()
                 loaded = vici_wrapper.is_connection_loaded(self.profile)
                 if loaded:
                     return State.LOADED.value
@@ -151,7 +151,6 @@ class Connection(models.Model):
                 return State.UNLOADED.value
         else:
             try:
-                vici_wrapper = ViciWrapper()
                 state = vici_wrapper.get_connection_state(self.profile)
                 if state == State.DOWN.value:
                     return State.DOWN.value

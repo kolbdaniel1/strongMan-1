@@ -35,29 +35,15 @@ class HeaderForm(forms.Form):
     def clean_remote_addrs(self):
         remote_addrs = self.cleaned_data['remote_addrs']
         if remote_addrs is '':
-            id = self.cleaned_data['connection_id']
-            if id is not None:
-                conn = Connection.objects.get(pk=id)
-                if conn.is_site_to_site():
-                    raise forms.ValidationError("This field is required.")
-            else:
-                connection_type = self.data['connection_type']
-                if connection_type == 'site_to_site':
-                    raise forms.ValidationError("This field is required.")
+            if 'initiate' in self.data:
+                raise forms.ValidationError("This field is required.")
         return remote_addrs
 
     def clean_local_addrs(self):
         local_addrs = self.cleaned_data['local_addrs']
         if local_addrs is '':
-            id = self.cleaned_data['connection_id']
-            if id is not None:
-                conn = Connection.objects.get(pk=id)
-                if conn.is_remote_access():
-                    raise forms.ValidationError("This field is required.")
-            else:
-                connection_type = self.data['connection_type']
-                if connection_type == 'remote_access':
-                    raise forms.ValidationError("This field is required.")
+            if 'initiate' not in self.data:
+                raise forms.ValidationError("This field is required.")
         return local_addrs
 
     def fill(self, connection):
@@ -90,6 +76,7 @@ class HeaderForm(forms.Form):
         connection.profile = self.cleaned_data['profile']
         connection.version = self.cleaned_data['version']
         connection.send_certreq = self.cleaned_data["send_certreq"]
+        connection.initiate = self.cleaned_data['initiate']
         connection.save()
 
     def model(self):
