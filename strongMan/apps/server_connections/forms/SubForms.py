@@ -384,7 +384,7 @@ class EapCertificateForm(forms.Form):
 
     def fill(self, connection):
         local_auth = None
-        for local in connection.server_remote.all():
+        for local in connection.server_local.all():
             subclass = local.subclass()
             if isinstance(subclass, EapCertificateAuthentication):
                 local_auth = subclass
