@@ -146,6 +146,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
+        $('[data-toggle="popover"]').popover();
         function rememberVisible (obj) {
             obj.removeClass('notVisible');
             if(obj.css('display') == 'none') {
