@@ -67,6 +67,10 @@
   min-width: 100px; }
 #connection-overview .table-container .connection-info-span {
   padding-top: 0px; }
+  #connection-overview .table-container .connection-info-span td {
+    padding: 2px; }
+#connection-overview .table-container .child-sa-table tr {
+  border-top: solid 1px grey; }
 #connection-overview .table-container .connection-info {
   width: 100%;
   border-top: None;
@@ -89,8 +93,16 @@
 
 #ConnectionForm a {
   cursor: pointer; }
-#ConnectionForm input, #ConnectionForm .identity_picker, #ConnectionForm .picker, #ConnectionForm .cert_upload {
+#ConnectionForm .row, #ConnectionForm input, #ConnectionForm .identity_picker, #ConnectionForm .picker, #ConnectionForm .cert_upload, #ConnectionForm .certificateselect, #ConnectionForm .identityselect {
   margin-bottom: 10px; }
+
+.sa-scroll {
+  max-height: 400px !important;
+  width: 100% !important;
+  overflow-y: scroll; }
+
+#connection-overview .table-container .connection-info {
+  margin-bottom: 0; }
 
 .filter-table .quick {
   margin-left: 0.5em;
@@ -99,8 +111,26 @@
 .filter-table .quick:hover {
   text-decoration: underline; }
 
-td.alt {
+td.alt1, td.alt2 {
   background-color: #ffc;
   background-color: rgba(255, 255, 0, 0.2); }
+
+td.child-alt1, td.child-alt2 {
+  background-color: #bfe4ff; }
+
+.modal-dialog {
+  width: 800px;
+  margin: 30px auto; }
+
+#read-only-view {
+  hight: 100%; }
+  #read-only-view dl {
+    margin-bottom: 0px;
+    width: 100%; }
+
+#grow span {
+  font-family: 'Glyphicons Halflings';
+  float: left;
+  color: grey; }
 
 /*# sourceMappingURL=connections.css.map */

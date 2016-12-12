@@ -39,26 +39,26 @@ function stateDown(connectionId) {
 }
 
 function stateConnecting(connectionId) {
-    $('#toggle_input' + connectionId).prop('checked', true).change();
     $('#button_div' + connectionId).find('.toggle-on').text("");
     $('#button_div' + connectionId).find('.toggle-on').append("<i class='glyphicon glyphicon-refresh spinning'></i>");
     $('#button_div' + connectionId).find('.toggle-on').attr("class", "btn btn-warning toggle-on");
     $('#button_div' + connectionId).find('.toggle').attr("class", 'toggle btn btn-warning');
+    $('#toggle_input' + connectionId).prop('checked', true).change();
     lock(connectionId);
 }
 
 function stateLoaded(connectionId) {
-    $('#toggle_input' + connectionId).prop('checked', true).change();
     $('#button_div' + connectionId).find('.toggle-on').text("Loaded");
     $('#button_div' + connectionId).find('.toggle-on').attr("class", "btn btn-success toggle-on");
     $('#button_div' + connectionId).find('.toggle').attr("class", 'toggle btn btn-success');
+    $('#toggle_input' + connectionId).prop('checked', true).change();
 }
 
 function stateUnloaded(connectionId) {
-    $('#toggle_input' + connectionId).prop('checked', false).change();
     $('#button_div' + connectionId).find('.toggle-off').text("Unloaded");
     $('#toggle_connection' + connectionId).prop('checked', false).change();
     $('#button_div' + connectionId).find('.toggle').attr("class", 'toggle btn btn-default off');
+    $('#toggle_input' + connectionId).prop('checked', false).change();
 }
 
 function lock(connectionId) {
@@ -135,33 +135,55 @@ function setConnectionInfo(connectionId, csrf) {
 }
 
 function fillConnectionInfo(id, child) {
-    generate_entries(id, Object.keys(child).length, child);
+    fillInfos(id, Object.keys(child).length, child);
 }
 
 function showConnectionInfoRow(id, csrf) {
     setConnectionInfo(id, csrf);
     $('#connection-info-row-' + id).toggle(true);
     $('#connection-row-' + id).addClass("success");
+    var btn = $('#collapse-btn-' + id);
+    var btn_text = btn.children().slice(0);
+    if (btn_text.hasClass("glyphicon-chevron-right")) {
+        btn_text.removeClass("glyphicon-chevron-right");
+        btn_text.addClass("glyphicon-chevron-down");
+    }
 }
 
 function hideConnectionInfoRow(id) {
     $('#connection-info-row-' + id).toggle(false);
     $('#connection-row-' + id).removeClass("success");
+    var btn = $('#collapse-btn-' + id);
+    var btn_text = btn.children().slice(0);
+    if (btn_text.hasClass("glyphicon-chevron-down")) {
+        btn_text.removeClass("glyphicon-chevron-down");
+        btn_text.addClass("glyphicon-chevron-right");
+    }
 }
 
-function generate_entries(conn_id, rows, child) {
+function toggleConnectionInfoRow(id) {
+    var row = $('#connection-info-row-' + id);
+    var btn = $('#collapse-btn-' + id);
+    var btn_text = btn.children().slice(0);
+    if (btn_text.hasClass("glyphicon-chevron-right")) {
+        btn_text.removeClass("glyphicon-chevron-right");
+        btn_text.addClass("glyphicon-chevron-down");
+    } else {
+        btn_text.removeClass("glyphicon-chevron-down");
+        btn_text.addClass("glyphicon-chevron-right");
+    }
+    row.toggle();
+}
+
+function fillInfos(conn_id, rows, child) {
     var sas = document.getElementById("connection-" + conn_id + "-sas");
 
     $("#connection-" + conn_id + "-sas tr").remove();
 
     for (var i = 0; i < rows; i++) {
         var id = child[i].uniqueid;
-        var row = document.createElement("tr");
 
-        // var cell_uniqueid = document.createElement("td");
-        // var uniqueid = document.createTextNode(id);
-        // cell_uniqueid.appendChild(uniqueid);
-        // row.appendChild(cell_uniqueid);
+        var row = document.createElement("tr");
 
         var cell_remote_host = document.createElement("td");
         var remote_host = document.createTextNode(child[i].remote_host);
@@ -221,6 +243,8 @@ function generate_entries(conn_id, rows, child) {
         cell_button_terminate_sa.appendChild(form_terminate_sa);
         row.appendChild(cell_button_terminate_sa);
        
+
+        //sa_scroll.appendChild(row);
         sas.appendChild(row);
 
         // CHILD SAS
@@ -233,7 +257,8 @@ function generate_entries(conn_id, rows, child) {
             child_sas_row.id = "child_sas" + id;
 
             var cell_child_sas = document.createElement("td");
-            cell_child_sas.colSpan = "5";
+            cell_child_sas.colSpan = "3";
+            cell_child_sas.className = "child-sa-cell";
             cell_child_sas.style = "padding-left: 34px; background-color: #dadfe8;";
 
             var table = document.createElement("table");
@@ -274,6 +299,9 @@ function generate_entries(conn_id, rows, child) {
             child_sas_header_row.appendChild(h_cell_terminate_button);
 
             table.appendChild(child_sas_header_row);
+
+
+            var child_sas_body_row = document.createElement("tbody");
 
             for (var n = 0; n < nr_of_children; n++) {
                 var child_sa = child_sas[n];
@@ -369,7 +397,8 @@ function generate_entries(conn_id, rows, child) {
                 cell_button_terminate_child_sa.appendChild(form_terminate_child_sa);
                 child_row.appendChild(cell_button_terminate_child_sa);
 
-                table.appendChild(child_row);
+                child_sas_body_row.appendChild(child_row);
+                table.appendChild(child_sas_body_row);
             }
             cell_child_sas.appendChild(table);
             child_sas_row.appendChild(cell_child_sas);

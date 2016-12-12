@@ -15,11 +15,13 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input id="remoteHostFilter" class="form-control input-sm search" type="text" placeholder="Remote host"></td>
-                        <td><input id="remoteIdFilter" class="form-control input-sm search" type="text" placeholder="Remote ID"></td>
-                        <td><input id="remoteTsFilter" class="form-control input-sm search" type="text" placeholder="Remote ts"></td>
-                        <td><input id="localTsFilter" class="form-control input-sm search" type="text" placeholder="Local ts"></td>
-                        <td><button type="button" class="btn btn-default btn-sm">search</button></td>
+                        <td><input id="remoteHostFilter" class="form-control input-sm search-sa" type="text" placeholder="Remote host"></td>
+                        <td><input id="remoteIdFilter" class="form-control input-sm search-sa" type="text" placeholder="Remote ID"></td>
+                        <td><input id="remoteTsFilter" class="form-control input-sm search-child-sa" type="text" placeholder="Remote ts"></td>
+                        <td><input id="localTsFilter" class="form-control input-sm search-child-sa" type="text" placeholder="Local ts"></td>
+                        <td><div class="col-sm-1 col-xs-2">
+                            {% include "server_connections/widgets/QuestionPopover.html" with title="Filter help" content="Filterterm = 'Remote Host' OR 'Remote ID' AND ('Remote TS' OR 'Local TS'). If you set Remote Host and Remote ID, the last focused value is taken for filtering." %}
+                        </div></td>
                     </tr>
                 </tbody>
             </table>
@@ -54,27 +56,26 @@
                                         {{ cell|localize }}{% else %}{{ cell|unlocalize }}{% endif %}{% endif %}</td>
                             {% endfor %}
                         </tr>
-                        <tr id="connection-info-row-{{ row.record.id }}" class="connection-info-row {{ cyclename }}"
+                        <tr id="connection-info-row-{{ row.record.id }}" class="connection-info-row {{ cyclename }} collapsed"
                             style="display: none;">
-
-                            <td colspan="5" class="connection-info-span">
-                                <div class="panel panel-default connection-info">
-                                    <div class="panel-body">
-                                        <table class="table-hover table-condensed table-responsive sa-table" style="width: 100%">
-                                            <thead>
-                                                <tr>
-                                                    <!--<th>Ike SA id {#% csrf_token %#}</th>-->
-                                                    <th>Remote host</th>
-                                                    <th>Remote ID</th>
-                                                    <th class="col-xs-1">Terminate</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="connection-{{ row.record.id }}-sas"></tbody>
-                                        </table>
+                            <td colspan="7" class="connection-info-span">
+                                <div class="sa-scroll">
+                                    <div class="panel panel-default connection-info">
+                                        <div class="panel-body">
+                                            <table class="table-hover table-condensed table-responsive sa-table" style="width: 100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Remote host</th>
+                                                        <th>Remote ID</th>
+                                                        <th class="col-xs-1">Terminate</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="connection-{{ row.record.id }}-sas"></tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
-
                         </tr>
                     {% endblock table.tbody.row %}
                     {% empty %}
@@ -144,7 +145,6 @@
     {% endif %}
 </div>
 <script type="text/javascript">
-    var currentSearch;
     $(document).ready(function() {
         function rememberVisible (obj) {
             obj.removeClass('notVisible');
@@ -152,9 +152,45 @@
                 obj.addClass('notVisible');
             }
         }
+        $(document).bind("ajaxComplete", function(){
+            $('#remoteTsFilter, #localTsFilter').unbind();
+            $("#remoteTsFilter, #localTsFilter").on("keyup", function () {
+                $('#remoteHostFilter').trigger('click');
+                $('#remoteIdFilter').trigger('click');
+                $('#remoteTsFilter').trigger('click');
+                $('#localTsFilter').trigger('click');
+                console.log('child-sa');
+            });
 
-        $(".search").on("click", function () {
-            currentSearch = $(this);
+            $('.child-sa-table').filterTable({
+                inputSelector: $('#remoteTsFilter'),
+                ignoreColumns: [1,2,3,4,5,6],
+                minRows: 0,
+                highlightClass: 'child-alt1',
+                callback: function(term, table) {
+{#                    table.parents('tr').show().prev().show();#}
+                    if (term) {
+                        table.find('tr').not('.visible').parent().closest('tr').hide().prev().hide();
+{#                        table.closest('tr').not('.visible').hide().prev().hide();#}
+                    }
+                }
+            }).filterTable({
+                inputSelector: $('#localTsFilter'),
+                ignoreColumns: [0,2,3,4,5,6],
+                minRows: 0,
+                highlightClass: 'child-alt2',
+                callback: function(term, table) {
+{#                    table.parents('tr').show().prev().show();#}
+                    if (term) {
+                        table.find('tr').not('.visible').parent().closest('tr').hide().prev().hide();
+{#                        table.closest('tr').not('.visible').hide().prev().hide();#}
+                    }
+                }
+            });
+            $('#remoteHostFilter').trigger('click');
+            $('#remoteIdFilter').trigger('click');
+            $('#remoteTsFilter').trigger('click');
+            $('#localTsFilter').trigger('click');
         });
 
         $('.connection-info-row').each(function() {
@@ -162,39 +198,51 @@
             rememberVisible(that);
             $(document).bind("ajaxComplete", function(){
                 rememberVisible(that);
-                currentSearch.trigger('click');
             });
 
+            $('#remoteHostFilter, #remoteIdFilter').on("keyup", function () {
+                console.log('sa');
+                $('#remoteHostFilter').trigger('click');
+                $('#remoteIdFilter').trigger('click');
+                $('#remoteTsFilter').trigger('click');
+                $('#localTsFilter').trigger('click');
+            });
 
             that.find('table').filterTable({
                 inputSelector: $('#remoteHostFilter'),
-                ignoreColumns: [1,2,3,4,5],
+                ignoreColumns: [1,2],
+                ignoreClass: 'child-sa-cell',
+                highlightClass: 'alt1',
                 minRows: 0,
                 callback: function(term, table) {
                     table.find('.notVisible').hide();
+                    table.find('.alt1').closest('tr').show();
+                    table.find('.visible').next().show().find('tr').show().find('td').removeClass('alt1');
+                    $('#remoteTsFilter').trigger('click');
+                    $('#localTsFilter').trigger('click');
+
                 }
             }).filterTable({
                 inputSelector: $('#remoteIdFilter'),
-                ignoreColumns: [0,2,3,4,5],
+                ignoreColumns: [0,2],
+                ignoreClass: 'child-sa-cell',
+                highlightClass: 'alt2',
                 minRows: 0,
                 callback: function(term, table) {
                     table.find('.notVisible').hide();
-                }
-            }).filterTable({
-                inputSelector: $('#remoteTsFilter'),
-                ignoreColumns: [0,1,3,4,5],
-                minRows: 0,
-                callback: function(term, table) {
-                    table.find('.notVisible').hide();
-                }
-            }).filterTable({
-                inputSelector: $('#localTsFilter'),
-                ignoreColumns: [0,1,2,4,5],
-                minRows: 0,
-                callback: function(term, table) {
-                    table.find('.notVisible').hide();
+                    table.find('.alt2').closest('tr').show();
+                    table.find('.visible').next().show().find('tr').show();
+                    $('#remoteTsFilter').trigger('click');
+                    $('#localTsFilter').trigger('click');
                 }
             });
         });
     });
+    $(function () {
+        $(document).popover({
+            selector: '[data-toggle=popover]',
+            trigger: 'focus',
+            container: 'body'
+        });
+      });
 </script>
