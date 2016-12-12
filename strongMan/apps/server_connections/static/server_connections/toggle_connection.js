@@ -39,26 +39,29 @@ function stateDown(connectionId) {
 }
 
 function stateConnecting(connectionId) {
-    $('#toggle_input' + connectionId).prop('checked', true).change();
+
     $('#button_div' + connectionId).find('.toggle-on').text("");
     $('#button_div' + connectionId).find('.toggle-on').append("<i class='glyphicon glyphicon-refresh spinning'></i>");
     $('#button_div' + connectionId).find('.toggle-on').attr("class", "btn btn-warning toggle-on");
     $('#button_div' + connectionId).find('.toggle').attr("class", 'toggle btn btn-warning');
+    $('#toggle_input' + connectionId).prop('checked', true).change();
     lock(connectionId);
 }
 
 function stateLoaded(connectionId) {
-    $('#toggle_input' + connectionId).prop('checked', true).change();
+
     $('#button_div' + connectionId).find('.toggle-on').text("Loaded");
     $('#button_div' + connectionId).find('.toggle-on').attr("class", "btn btn-success toggle-on");
     $('#button_div' + connectionId).find('.toggle').attr("class", 'toggle btn btn-success');
+    $('#toggle_input' + connectionId).prop('checked', true).change();
 }
 
 function stateUnloaded(connectionId) {
-    $('#toggle_input' + connectionId).prop('checked', false).change();
+
     $('#button_div' + connectionId).find('.toggle-off').text("Unloaded");
     $('#toggle_connection' + connectionId).prop('checked', false).change();
     $('#button_div' + connectionId).find('.toggle').attr("class", 'toggle btn btn-default off');
+    $('#toggle_input' + connectionId).prop('checked', false).change();
 }
 
 function lock(connectionId) {

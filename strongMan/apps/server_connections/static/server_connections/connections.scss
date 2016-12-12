@@ -157,11 +157,14 @@
   }
 }
 .sa-scroll {
-  height: 400px !important;
+  max-height: 400px !important;
   width: 100% !important;
   overflow-y: scroll;
 }
 
+#connection-overview .table-container .connection-info {
+  margin-bottom: 0;
+}
 
 .filter-table {
   .quick {
