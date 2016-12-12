@@ -52,14 +52,18 @@
                 <dd class="col-sm-8">{{ form.start_action.value }}</dd>
             {% endif %}
         </dl>
-        <dl class="row">
-            {% for key, value in form.remote_auth.field.choices %}
-                {% if form.remote_auth.value|slugify == key|slugify %}
-                    <dt class="col-sm-4">Remote Authentication</dt>
-                    <dd class="col-sm-8" class="col-sm-8">{{ value }}</dd>
-                {% endif %}
-            {% endfor %}
-        </dl>
+
+        {% if form.remote_auth.value %}
+            <dl class="row">
+                <dt class="col-sm-4">Remote Authentication</dt>
+                {% for key, value in form.remote_auth.field.choices %}
+                    {% if form.remote_auth.value|slugify == key|slugify %}
+                        <dd class="col-sm-8" class="col-sm-8">{{ value }}</dd>
+                    {% endif %}
+                {% endfor %}
+            </dl>
+        {% endif %}
+
         {% if form.connection_type == 'site_to_site' or connection.connection_type == 'site_to_site' %}
             <dl class="row">
                 <dt class="col-sm-4">Active initiator</dt>
