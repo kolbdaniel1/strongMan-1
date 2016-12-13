@@ -187,7 +187,7 @@ class CaCertificateForm(forms.Form):
                 sub.delete()
             if isinstance(sub, AutoCaAuthentication):
                 sub.delete()
-        if isinstance(connection, IKEv2Certificate):
+        if isinstance(connection, IKEv2Certificate) or isinstance(connection, IKEv2CertificateEAP):
             auth = 'pubkey'
         else:
             auth = self.cleaned_data['remote_auth']
@@ -216,6 +216,7 @@ class EapCertificateForm(forms.Form):
                 break
         if remote_auth is None:
             assert False
+        self.initial['remote_auth'] = remote_auth.auth
 
     def create_connection(self, connection):
         max_round = 0
@@ -231,6 +232,7 @@ class EapCertificateForm(forms.Form):
         for remote in connection.server_remote.all():
             sub = remote.subclass()
             if isinstance(sub, EapCertificateAuthentication):
+                sub.auth = self.cleaned_data['remote_auth']
                 sub.save()
 
 
