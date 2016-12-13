@@ -129,7 +129,7 @@ function setConnectionInfo(connectionId, csrf) {
         type: 'POST',
         url: '/server_connections/info/',
         success: function (response) {
-            if (response.success) {
+            if (response.success && !$.trim( $('#stop-filter').html() ).length) {
                 fillConnectionInfo(connectionId, response.child);
             }
             setTimeout(function () {
