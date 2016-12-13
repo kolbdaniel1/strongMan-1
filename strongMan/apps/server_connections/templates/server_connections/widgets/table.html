@@ -184,9 +184,10 @@
                 highlightClass: 'child-alt1',
                 visibleClass: 'visible1',
                 callback: function(term, table) {
+
                     if (term.length>0) {
-                        table.find('.visible1.visible2').parent().closest('tr .visible3.visible4').show().prev().show();
                         table.find('tr').not('.visible1').parent().closest('tr').hide().prev().hide();
+                        table.find('.visible1.visible2').parent().closest('tr .visible3.visible4').show().prev().show();
                     } else {
                         table.find('.visible2').parent().closest('tr .visible3.visible4').show().prev().show();
                     }
@@ -199,8 +200,8 @@
                 visibleClass: 'visible2',
                 callback: function(term, table) {
                     if (term.length>0) {
-                        table.find('.visible2.visible1').parent().closest('tr .visible3.visible4').show().prev().show();
                         table.find('tr').not('.visible2').parent().closest('tr').hide().prev().hide();
+                        table.find('.visible2.visible1').parent().closest('tr .visible3.visible4').show().prev().show();
                     } else {
                         table.find('.visible1').parent().closest('tr .visible3.visible4').show().prev().show();
                     }
