@@ -389,27 +389,27 @@ class EapCertificateForm(forms.Form):
         super(EapCertificateForm, self).__init__(*args, **kwargs)
 
     def fill(self, connection):
-        local_auth = None
-        for local in connection.server_local.all():
-            subclass = local.subclass()
+        remote_auth = None
+        for remote in connection.server_local.all():
+            subclass = remote.subclass()
             if isinstance(subclass, EapCertificateAuthentication):
-                local_auth = subclass
+                remote_auth = subclass
                 break
-        if local_auth is None:
+        if remote_auth is None:
             assert False
 
     def create_connection(self, connection):
         max_round = 0
-        for local in connection.server_local.all():
-            if local.round > max_round:
-                max_round = local.round
+        for remote in connection.server_remote.all():
+            if remote.round > max_round:
+                max_round = remote.round
 
-        auth = EapCertificateAuthentication(name='local-eap', auth='pubkey', local=connection,
+        auth = EapCertificateAuthentication(name='remote-pubkey', auth='pubkey', remote=connection,
                                             round=max_round + 1)
         auth.save()
 
     def update_connection(self, connection):
-        for local in connection.server_local.all():
-            sub = local.subclass()
+        for remote in connection.server_remote.all():
+            sub = remote.subclass()
             if isinstance(sub, EapCertificateAuthentication):
                 sub.save()
