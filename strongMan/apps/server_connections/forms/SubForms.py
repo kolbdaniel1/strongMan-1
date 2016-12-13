@@ -2,7 +2,7 @@ from django import forms
 from strongMan.apps.certificates.models import UserCertificate, AbstractIdentity
 from strongMan.apps.server_connections.models import Connection, Child, Address, Proposal, AutoCaAuthentication, \
     CaCertificateAuthentication, CertificateAuthentication, EapAuthentication, EapCertificateAuthentication, \
-    EapTlsAuthentication, IKEv2Certificate, IKEv2EapTls
+    EapTlsAuthentication, IKEv2Certificate, IKEv2EapTls, IKEv2CertificateEAP, IKEv2EAP
 from .FormFields import CertificateChoice, IdentityChoice, PoolChoice
 from strongMan.apps.pools.models import Pool
 
@@ -112,6 +112,7 @@ class PoolForm(forms.Form):
 
     def update_connection(self, connection):
         connection.pool = self.cleaned_data['pool']
+        connection.save()
 
 
 class CaCertificateForm(forms.Form):
@@ -162,6 +163,7 @@ class CaCertificateForm(forms.Form):
                 if sub.ca_cert is not None:
                     self.chosen_certificate = sub.ca_cert.pk
                 self.is_auto_choose = False
+                self.initial['remote_auth'] = sub.auth
                 break
 
     def create_connection(self, connection):
@@ -170,12 +172,12 @@ class CaCertificateForm(forms.Form):
         else:
             auth = self.cleaned_data['remote_auth']
         if self.is_auto_choose:
-            AutoCaAuthentication(name='remote-cert', auth=auth, remote=connection).save()
+            AutoCaAuthentication(name='remote-' + auth, auth=auth, remote=connection).save()
         else:
             if self.chosen_certificate is None:
-                CaCertificateAuthentication(name='remote-cert', auth=auth, remote=connection).save()
+                CaCertificateAuthentication(name='remote-' + auth, auth=auth, remote=connection).save()
             else:
-                CaCertificateAuthentication(name='remote-cert', auth=auth, remote=connection,
+                CaCertificateAuthentication(name='remote-' + auth, auth=auth, remote=connection,
                                             ca_cert=self.chosen_certificate).save()
 
     def update_connection(self, connection):
@@ -185,14 +187,14 @@ class CaCertificateForm(forms.Form):
                 sub.delete()
             if isinstance(sub, AutoCaAuthentication):
                 sub.delete()
-        if isinstance(connection, IKEv2EapTls):
-            auth = self.cleaned_data['remote_auth']
-        else:
+        if isinstance(connection, IKEv2Certificate):
             auth = 'pubkey'
-        if self.is_auto_choose:
-            AutoCaAuthentication(name='remote-cert', auth=auth, remote=connection).save()
         else:
-            CaCertificateAuthentication(name='remote-cert', auth=auth, remote=connection,
+            auth = self.cleaned_data['remote_auth']
+        if self.is_auto_choose:
+            AutoCaAuthentication(name='remote-' + auth, auth=auth, remote=connection).save()
+        else:
+            CaCertificateAuthentication(name='remote-' + auth, auth=auth, remote=connection,
                                         ca_cert=self.chosen_certificate).save()
 
 
@@ -323,9 +325,11 @@ class EapTlsForm(UserCertificateForm):
             assert False
         self.my_certificate = local_auth.identity.certificate.pk
         self.my_identity = local_auth.identity.pk
+        self.initial['remote_auth'] = local_auth.auth
 
     def create_connection(self, connection):
-        EapTlsAuthentication(name='local-eap-tls', auth=self.cleaned_data['remote_auth'], local=connection,
+        auth = self.cleaned_data['remote_auth']
+        EapTlsAuthentication(name='local-' + auth, auth=auth, local=connection,
                              identity=self.my_identity).save()
 
     def update_connection(self, connection):
@@ -333,7 +337,9 @@ class EapTlsForm(UserCertificateForm):
             sub = local.subclass()
             if isinstance(sub, EapTlsAuthentication):
                 sub.identity = self.my_identity
-                sub.auth = self.cleaned_data['remote_auth']
+                auth = self.cleaned_data['remote_auth']
+                sub.auth = auth
+                sub.name = 'local-' + auth
                 sub.save()
 
 

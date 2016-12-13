@@ -5,6 +5,7 @@
             <select class="selectpicker" data-live-search="true"
                     name="{{ pool.name }}"
                     id="id_{{ pool.name }}" data-show-subtext="True">
+
                 <option value="">{{ fields.pool.empty_label }}</option>
                 {% for choice in pool.field.queryset %}
                     <option value="{{ choice.id }}"
@@ -15,7 +16,7 @@
             {% include "server_connections/forms/../widgets/errormsg.html" with field=pool %}
         </div>
         <div class="col-sm-1 col-xs-2">
-            {% include "server_connections/widgets/QuestionPopover.html" with title="Pools help" content="Select a pool." %}
+            {% include "server_connections/widgets/QuestionPopover.html" with title="Pools help" content="Select an IP pool to allocate virtual IP addresses and other configuration attributes." %}
         </div>
         <div class="col-sm-11 col-xs-10">
             <div class="pull-right">
