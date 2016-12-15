@@ -27,7 +27,7 @@ RUN mkdir /opt/strongSwan \
 && make install > /dev/null 2>&1 \
 && cd / \
 && git clone https://github.com/kolbdaniel1/strongManPro.git \
-&& cd strongManPro \
+&& cd strongMan \
 && pip install --upgrade pip \
 && pip install -r requirements.txt \
 && cd /strongswan-$STRONGSWAN_VERSION/src/libcharon/plugins/vici/python/ \
