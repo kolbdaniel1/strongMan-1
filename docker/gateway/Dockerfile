@@ -27,7 +27,7 @@ RUN mkdir /opt/strongSwan \
 && make install > /dev/null 2>&1 \
 && cd / \
 && git clone https://github.com/kolbdaniel1/strongManPro.git \
-&& cd strongMan \
+&& cd strongManPro \
 && pip install --upgrade pip \
 && pip install -r requirements.txt \
 && cp -rf /strongswan-$STRONGSWAN_VERSION/testing/hosts/moon/etc/swanctl/* /etc/swanctl/ \
