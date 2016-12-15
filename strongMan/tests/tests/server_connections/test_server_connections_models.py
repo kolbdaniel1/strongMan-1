@@ -1,5 +1,4 @@
 import os
-from collections import OrderedDict
 from django.test import TestCase
 from strongMan.apps.certificates.container_reader import X509Reader, PKCS1Reader
 from strongMan.apps.certificates.models import Certificate, UserCertificate, CertificateDoNotDelete
@@ -11,7 +10,7 @@ from strongMan.apps.pools.models.pools import Pool
 
 class ServerConnectionModelTest(TestCase):
     def setUp(self):
-        pool = Pool(poolname='testPool', addresses='10.1.0.0/16').save()  # attribute, attributevalues
+        pool = Pool(poolname='testPool', addresses='10.1.0.0/16').save()
 
         connection = Connection(profile='rw', version='2', pool=pool, send_certreq=False, enabled=True)
         connection.save()
@@ -54,14 +53,6 @@ class ServerConnectionModelTest(TestCase):
     def test_authentication_added(self):
         self.assertEquals(3, Authentication.objects.count())
 
-    # def test_secret_added(self):
-    #     self.assertEquals(1, Secret.objects.count())
-
-
-    # def test_secret_dict(self):
-    #     secret = Secret.objects.first()
-    #     self.assertTrue(isinstance(secret.dict(), OrderedDict))
-
     def test_delete_all_connections(self):
         connection = Connection.objects.first()
 
@@ -85,17 +76,6 @@ class ServerConnectionModelTest(TestCase):
         self.assertEquals(0, IKEv2EAP.objects.count())
         self.assertEquals(2, Child.objects.count())
         self.assertEquals(1, Connection.objects.count())
-
-    # def test_secrets_encrypted_field(self):
-    #     Secret.objects.all().delete()
-    #     password = "adsfasdfasdf"
-    #     secret = Secret()
-    #     secret.type = "as"
-    #     secret.data = password
-    #     secret.save()
-    #
-    #     data = Secret.objects.first().data
-    #     self.assertEqual(data, password)
 
     def test_prevent_certificate_delete(self):
         cert = UserCertificate.objects.first()

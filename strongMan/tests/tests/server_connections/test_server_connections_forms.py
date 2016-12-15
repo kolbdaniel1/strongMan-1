@@ -3,6 +3,7 @@ from django.test import TestCase
 from strongMan.apps.certificates.container_reader import X509Reader, PKCS1Reader
 from strongMan.apps.certificates.models import Certificate
 from strongMan.apps.certificates.services import UserCertificateManager
+from strongMan.apps.pools.models.pools import Pool
 from strongMan.apps.server_connections.forms.ConnectionForms import ChooseTypeForm, Ike2CertificateForm, Ike2EapForm, \
     Ike2EapCertificateForm
 from strongMan.apps.server_connections.forms.SubForms import CaCertificateForm, ServerIdentityForm, HeaderForm, \
@@ -58,11 +59,11 @@ class ConnectionFormsTest(TestCase):
 
     def test_ChooseTypeForm(self):
         form_data = {'current_form': "ChooseTypeForm", 'form_name': "Ike2CertificateForm"}
-        form = ChooseTypeForm(data=form_data)
+        form = ChooseTypeForm(form_data, 'remote_access')
         self.assertTrue(form.is_valid())
 
     def test_ChooseTypeForm_invalid(self):
-        form_data = {'current_form': "ChooseTypeForm", 'form_name': "sting"}
+        form_data = {'current_form': "ChooseTypeForm", 'form_name': "string"}
         form = ChooseTypeForm(data=form_data)
         self.assertFalse(form.is_valid())
 
@@ -265,15 +266,16 @@ class ConnectionFormsTest(TestCase):
         self.assertEqual(len(form.initial), 8)
 
     def test_ConnectionForm_create_connection(self):
+        pool = Pool(poolname='pool', addresses='192.168.0.5').save()
         data = {"current_form": "ServerIdentForm", "profile": "myNewProfileName",
                 "gateway": "LetsCallTheServerHansUeli", "identity_ca": "myidentity",
                 'certificate': self.usercert.pk, "identity": self.usercert.subclass().identities.first().pk,
-                "certificate_ca": self.usercert.pk}
+                "certificate_ca": self.usercert.pk, "pool": pool}
 
-        form = Ike2CertificateForm(data=data)
+        form = Ike2CertificateForm(data)
         form.update_certificates()
         self.assertTrue(form.is_valid())
-        connection = form.create_connection()
+        connection = form.create_connection('remote_access')
         self.assertIsNotNone(connection)
         self.assertEqual(connection.profile, "myNewProfileName")
         self.assertEqual(connection.remote_addresses.first().value, "LetsCallTheServerHansUeli")
