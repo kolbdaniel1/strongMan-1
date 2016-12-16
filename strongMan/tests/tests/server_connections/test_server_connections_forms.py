@@ -96,17 +96,19 @@ class ConnectionFormsTest(TestCase):
         self.assertFalse(form.is_valid())
 
     def test_ConnectionForm_server_as_caidentity(self):
-        form_data = {'current_form': Ike2CertificateForm, 'gateway': "gateway", 'profile': 'profile',
+        form_data = {'current_form': Ike2CertificateForm, 'profile': 'profile',
                      'identity': self.usercert.identities.first().pk,
-                     'certificate': self.usercert.pk, 'certificate_ca': self.certificate.pk, 'is_server_identity': True}
+                     'certificate': self.usercert.pk, 'certificate_ca': self.certificate.pk, 'is_server_identity': True,
+                     "version": "2", "local_addrs": '127.0.0.1', "remote_addrs": '127.0.0.2'}
         form = Ike2CertificateForm(data=form_data)
         form.update_certificates()
         self.assertTrue(form.is_valid())
 
     def test_ConnectionForm_server_as_caidentity_unchecked(self):
-        form_data = {'current_form': Ike2CertificateForm, 'gateway': "gateway", 'profile': 'profile',
+        form_data = {'current_form': Ike2CertificateForm, 'profile': 'profile',
                      'identity': self.usercert.identities.first().pk,
-                     'certificate': self.usercert.pk, 'certificate_ca': self.certificate.pk, 'identity_ca': "gateway"}
+                     'certificate': self.usercert.pk, 'certificate_ca': self.certificate.pk, 'identity_ca': "gateway",
+                     "version": "2", "local_addrs": '127.0.0.1', "remote_addrs": '127.0.0.2'}
         form = Ike2CertificateForm(data=form_data)
         form.update_certificates()
         self.assertTrue(form.is_valid())
@@ -139,9 +141,10 @@ class ConnectionFormsTest(TestCase):
         self.assertFalse(form.is_valid())
 
     def test_Ike2EapForm(self):
-        form_data = {'current_form': "Ike2EapForm", 'gateway': "gateway", 'username': "username",
-                     'password': 'password',
-                     'profile': 'profile', 'certificate_ca': self.certificate.pk, 'identity_ca': "yolo"}
+        form_data = {'current_form': "Ike2EapForm",
+                     'profile': 'profile', 'certificate_ca': self.certificate.pk, 'identity_ca': "yolo",
+                     "version": "2", "local_addrs": '127.0.0.1', "remote_addrs": '127.0.0.2',
+                     "remote_auth": 'eap-radius'}
         form = Ike2EapForm(data=form_data)
         form.update_certs()
         valid = form.is_valid()
@@ -207,12 +210,13 @@ class ConnectionFormsTest(TestCase):
             pass
 
         data = {"current_form": "ServerIdentForm", "profile": "myNewProfileName",
-                "gateway": "LetsCallTheServerHansUeli", "is_server_identity": True}
+                "is_server_identity": True,
+                "version": "2", "local_addrs": '127.0.0.1', "remote_addrs": '127.0.0.2'}
         form = ServerIdentForm(data=data)
         valid = form.is_valid()
         self.assertTrue(valid)
         self.assertTrue(form.is_server_identity_checked)
-        self.assertEqual(form.ca_identity, "LetsCallTheServerHansUeli")
+        self.assertEqual(form.ca_identity, '127.0.0.2')
 
     def test_ServerIdentityForm_is_valid2(self):
         """
@@ -224,7 +228,8 @@ class ConnectionFormsTest(TestCase):
             pass
 
         data = {"current_form": "ServerIdentForm", "profile": "myNewProfileName",
-                "gateway": "LetsCallTheServerHansUeli", "identity_ca": "myidentity"}
+                "identity_ca": "myidentity",
+                "version": "2", "local_addrs": '127.0.0.1', "remote_addrs": '127.0.0.2'}
         form = ServerIdentForm(data=data)
         valid = form.is_valid()
         self.assertTrue(valid)
@@ -276,9 +281,10 @@ class ConnectionFormsTest(TestCase):
 
     def test_Ike2CertificateForm_is_valid(self):
         data = {"current_form": "ServerIdentForm", "profile": "myNewProfileName",
-                "gateway": "LetsCallTheServerHansUeli", "identity_ca": "myidentity",
+                "identity_ca": "myidentity",
                 'certificate': self.usercert.pk, "identity": self.usercert.subclass().identities.first().pk,
-                "certificate_ca": self.usercert.pk}
+                "certificate_ca": self.usercert.pk,
+                "version": "2", "local_addrs": '127.0.0.1', "remote_addrs": '127.0.0.2'}
         form = Ike2CertificateForm(data=data)
         form.update_certificates()
         valid = form.is_valid()
@@ -287,15 +293,13 @@ class ConnectionFormsTest(TestCase):
     def test_Ike2CertificateForm_fill(self):
         form = Ike2CertificateForm()
         form.fill(self.connection)
-        x = form.initial
-        x = 3
         self.assertEqual(len(form.initial), 16)
 
     def test_ConnectionForm_create_connection(self):
         data = {"current_form": "ServerIdentForm", "profile": "myNewProfileName",
                 "identity_ca": "myidentity",
                 'certificate': self.usercert.pk, "identity": self.usercert.subclass().identities.first().pk,
-                "version": "2"}
+                "version": "2", "local_addrs": '127.0.0.1', "remote_addrs": '127.0.0.2'}
 
         form = Ike2CertificateForm(data)
         form.update_certificates()
@@ -303,7 +307,7 @@ class ConnectionFormsTest(TestCase):
         connection = form.create_connection('remote_access')
         self.assertIsNotNone(connection)
         self.assertEqual(connection.profile, "myNewProfileName")
-        self.assertEqual(connection.remote_addresses.first().value, "LetsCallTheServerHansUeli")
+        self.assertEqual(connection.server_remote_addresses.first().value, '127.0.0.2')
 
 
 class TestCert:
