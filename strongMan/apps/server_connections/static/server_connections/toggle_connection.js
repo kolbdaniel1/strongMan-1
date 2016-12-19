@@ -119,7 +119,7 @@ function getState(connectionId, csrf) {
 
 function setAlert(response) {
     var alert = $('#alert_' + response.id);
-    alert.popover({title: "Exception", content: response.message, placement: "right"});
+    alert.popover({title: "Warning!", content: response.message, placement: "left", trigger: 'focus', container: 'body'});
     alert.popover('show');
 }
 
@@ -129,7 +129,7 @@ function setConnectionInfo(connectionId, csrf) {
         type: 'POST',
         url: '/server_connections/info/',
         success: function (response) {
-            if (response.success && !$.trim( $('#stop-filter').html() ).length) {
+            if (response.success && $('#filter-active-status').val()==="0") {
                 fillConnectionInfo(connectionId, response.child);
             }
             setTimeout(function () {

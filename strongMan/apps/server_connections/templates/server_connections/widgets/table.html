@@ -3,6 +3,7 @@
 <div class="old table-container">
     {% block table %}
         <div class="well" style="margin-top: 24px">
+            <input type="hidden" id="filter-active-status" name="filter-active" value="0">
             <table class="table-hover table-condensed table-responsive" style="width: 100%">
                 <thead>
                     <tr>
@@ -23,12 +24,9 @@
                         <td><input id="localTsFilter" class="form-control input-sm" type="text" placeholder="Local ts"></td>
                         <td><button type="button" class="btn btn-default" id="filter-clear">Clear</button></td>
                         <td><button type="button" class="btn btn-default" id="filter-btn">Search</button></td>
-                        <td><div class="col-sm-1 col-xs-2">
+                        <td>
                             {% include "server_connections/widgets/QuestionPopover.html" with title="Filter help" content="Filterterm = 'Remote Host' AND 'Remote ID' AND 'Remote TS' AND 'Local TS'. Note: Data will not refresh aslong filter is activ" %}
-                        </div></td>
-                    </tr>
-                    <tr>
-                        <td id="stop-filter" colspan="6"></td>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -147,12 +145,3 @@
         {% endwith %}
     {% endif %}
 </div>
-<script type="text/javascript">
-    $(function () {
-        $(document).popover({
-            selector: '[data-toggle=popover]',
-            trigger: 'focus',
-            container: 'body'
-        });
-      });
-</script>

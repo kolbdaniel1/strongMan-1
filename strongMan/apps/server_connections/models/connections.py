@@ -9,7 +9,6 @@ from django.dispatch import receiver
 
 from strongMan.apps.server_connections.models.common import State
 from strongMan.apps.pools.models import Pool
-from strongMan.apps.certificates.models import Certificate
 from strongMan.helper_apps.vici.wrapper.wrapper import ViciWrapper
 
 from .specific import Child, Address, Proposal, LogMessage

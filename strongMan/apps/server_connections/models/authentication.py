@@ -140,6 +140,9 @@ class EapTlsAuthentication(Authentication):
         auth = super(EapTlsAuthentication, self).dict()
         values = auth[self.name]
         values['certs'] = [self.identity.subclass().certificate.der_container]
+        ident = self.identity.subclass()
+        if not isinstance(ident, DnIdentity):
+            values['id'] = ident.value()
         return auth
 
     def has_private_key(self):

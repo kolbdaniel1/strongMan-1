@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    $('[data-toggle="popover"]').popover();
 
     function rememberVisible (obj) {
         obj.removeClass('notVisible');
@@ -8,16 +7,11 @@ $(document).ready(function() {
         }
     }
 
-    function triggerUsedFilter () {
+    function triggerAllFilter () {
         $('#remoteTsFilter').trigger('click');
         $('#localTsFilter').trigger('click');
         $('#remoteHostFilter').trigger('click');
         $('#remoteIdFilter').trigger('click');
-        // $('#remoteTsFilter, #localTsFilter, #remoteHostFilter, #remoteIdFilter').each(function(){
-        //    if ($(this).val().length>0) {
-        //        $(this).trigger('click');
-        //    }
-        // });
     }
 
     function initAllFilter (){
@@ -28,7 +22,6 @@ $(document).ready(function() {
             highlightClass: 'child-alt1',
             visibleClass: 'visible1',
             callback: function(term, table) {
-                console.log('1');
                 if (term.length>0) {
                     table.find('tr').not('.visible1').parent().closest('tr').hide().prev().hide();
                     table.find('.visible1.visible2').parent().closest('tr').prev('.visible3.visible4').show().next().show();
@@ -43,7 +36,6 @@ $(document).ready(function() {
             highlightClass: 'child-alt2',
             visibleClass: 'visible2',
             callback: function(term, table) {
-                console.log('2');
                 if (term.length>0) {
                     table.find('tr').not('.visible2').parent().closest('tr').hide().prev().hide();
                     table.find('.visible2.visible1').parent().closest('tr').prev('.visible3.visible4').show().next().show();
@@ -60,7 +52,6 @@ $(document).ready(function() {
             visibleClass: 'visible3',
             minRows: 0,
             callback: function(term, table) {
-                console.log('3');
                 table.find('.notVisible').hide();
                 table.children('tbody').children().not('.visible3.visible4').hide();
                 table.find('tbody').children('.visible3.visible4').next().show().find('tr').show();
@@ -79,7 +70,6 @@ $(document).ready(function() {
             visibleClass: 'visible4',
             minRows: 0,
             callback: function(term, table) {
-                console.log('4');
                 table.find('.notVisible').hide();
                 table.children('tbody').children().not('.visible3.visible4').hide();
                 table.find('tbody').children('.visible3.visible4').next().show().find('tr').show();
@@ -91,7 +81,12 @@ $(document).ready(function() {
                 }
             }
         });
-        triggerUsedFilter();
+    }
+
+    function startFilter () {
+        initAllFilter();
+        triggerAllFilter();
+        $('#remoteHostFilter, #remoteIdFilter, #remoteTsFilter, #localTsFilter').unbind();
     }
 
     $('.connection-info-row').each(function() {
@@ -103,17 +98,13 @@ $(document).ready(function() {
     });
 
     $('#filter-btn').on("click", function(){
-        var btn = $('<button>').attr('id', 'stop-filter-btn').attr('type', 'button').attr('class', 'btn btn-default').html('Stop filter / Continue monitoring');
-        $('#stop-filter').html(btn);
-        $('#stop-filter').on("click", "button", function(){
-            $('#stop-filter-btn').unbind();
-            $('#stop-filter').empty();
-        });
-        initAllFilter();
-        $('#remoteHostFilter, #remoteIdFilter, #remoteTsFilter, #localTsFilter').unbind();
+        $('#filter-active-status').val('1');
+        startFilter();
     });
 
-     $('#filter-clear').on("click", function(){
-         $('#remoteHostFilter, #remoteIdFilter, #remoteTsFilter, #localTsFilter').val('');
-     });
+    $('#filter-clear').on("click", function(){
+        $('#remoteHostFilter, #remoteIdFilter, #remoteTsFilter, #localTsFilter').val('');
+        startFilter();
+        $('#filter-active-status').val('0');
+    });
 });
