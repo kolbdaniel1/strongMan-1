@@ -83,7 +83,10 @@ class AutoCaAuthentication(Authentication):
 class EapAuthentication(Authentication):
     AUTH_CHOICES = (
         ('eap-radius', "eap-radius"),
+        ('eap-md5', "eap-md5"),
+        ('eap-mschapv2', "eap-mschapv2"),
         ('eap-ttls', "eap-ttls"),
+        ('eap-peap', "eap-peap"),
     )
     Authentication.auth = models.CharField(max_length=56, choices=AUTH_CHOICES, default='0')
 

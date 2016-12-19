@@ -39,13 +39,6 @@ class HeaderForm(forms.Form):
                 raise forms.ValidationError("This field is required.")
         return remote_addrs
 
-    def clean_local_addrs(self):
-        local_addrs = self.cleaned_data['local_addrs']
-        if local_addrs is '':
-            if 'initiate' not in self.data:
-                raise forms.ValidationError("This field is required.")
-        return local_addrs
-
     def fill(self, connection):
         self.initial['profile'] = connection.profile
         self.initial['local_addrs'] = connection.server_local_addresses.first().value

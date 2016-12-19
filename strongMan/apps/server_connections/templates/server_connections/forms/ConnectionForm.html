@@ -79,7 +79,7 @@
                 {% include "server_connections/forms/../widgets/errormsg.html" with field=form.local_addrs %}
             </div>
             <div class="col-sm-1 col-xs-2">
-                {% include "server_connections/widgets/QuestionPopover.html" with title="Server address help" content="Local address to use for IKE communication. Takes single IPv4/IPv6 addresses, DNS names, CIDR subnets or IP address ranges." %}
+                {% include "server_connections/widgets/QuestionPopover.html" with title="Server address help" content="Local address to use for IKE communication. Takes single IPv4/IPv6 addresses, DNS names, CIDR subnets or IP address ranges. Use keyword %any or leave field empty for any ethernet interface." %}
             </div>
         </div>
 
@@ -91,11 +91,13 @@
                 {% include "server_connections/forms/../widgets/errormsg.html" with field=form.remote_addrs %}
             </div>
             <div class="col-sm-1 col-xs-2">
-                {% include "server_connections/widgets/QuestionPopover.html" with title="Remote address help" content="Remote address to use for IKE communication. Takes single IPv4/IPv6 addresses, DNS names, CIDR subnets or IP address ranges." %}
+                {% include "server_connections/widgets/QuestionPopover.html" with title="Remote address help" content="Remote address to use for IKE communication. Takes single IPv4/IPv6 addresses, DNS names, CIDR subnets or IP address ranges. Use keyword %any or leave field empty for any ethernet interface." %}
             </div>
         </div>
 
-        {% include "server_connections/forms/PoolPicker.html" with pool=form.pool%}
+        {% if form.connection_type == 'remote_access' or connection.connection_type == 'remote_access' %}
+            {% include "server_connections/forms/PoolPicker.html" with pool=form.pool%}
+        {% endif %}
 
         <div class="row">
             <label class="control-label col-sm-3 col-xs-12">Send Certificate Request</label>
@@ -200,6 +202,14 @@
         </div>
     </form>
     <script>
+        $(function () {
+            $(document).popover({
+                selector: '[data-toggle=popover]',
+                trigger: 'focus',
+                container: 'body'
+            });
+        });
+
         $(".remove-btn").click(function () {
             btn = $(this);
             if (btn.hasClass('btn-default')) {
