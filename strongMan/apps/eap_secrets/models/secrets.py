@@ -12,7 +12,8 @@ class Secret(models.Model):
     salt = models.TextField()
 
     def dict(self):
-        secrets = OrderedDict(type=self.type, data=self.password, owners=[self.username])
+        password = self.password[32:]
+        secrets = OrderedDict(type=self.type, data=password, owners=[self.username])
         return secrets
 
     def __str__(self):
