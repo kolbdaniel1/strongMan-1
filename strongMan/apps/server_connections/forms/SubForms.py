@@ -39,13 +39,6 @@ class HeaderForm(forms.Form):
                 raise forms.ValidationError("This field is required.")
         return remote_addrs
 
-    def clean_local_addrs(self):
-        local_addrs = self.cleaned_data['local_addrs']
-        if local_addrs is '':
-            if 'initiate' not in self.data:
-                raise forms.ValidationError("This field is required.")
-        return local_addrs
-
     def fill(self, connection):
         self.initial['profile'] = connection.profile
         self.initial['local_addrs'] = connection.server_local_addresses.first().value
@@ -115,9 +108,9 @@ class PoolForm(forms.Form):
         connection.save()
 
 
-class CaCertificateForm(forms.Form):
+class RemoteCertificateForm(forms.Form):
     """
-    Manages the ca certificate field.
+    Manages the remote certificate field.
     Contains a checkbox for 'auto choosing' the ca certificate and a select field for selecting the certificate manually.
     Either the checkbox is checked or the certificate is selected.
     """
@@ -126,7 +119,7 @@ class CaCertificateForm(forms.Form):
     certificate_ca_auto = forms.BooleanField(initial=False, required=False)
 
     def __init__(self, *args, **kwargs):
-        super(CaCertificateForm, self).__init__(*args, **kwargs)
+        super(RemoteCertificateForm, self).__init__(*args, **kwargs)
         self.fields['certificate_ca'].queryset = UserCertificate.objects.all()
 
     @property
@@ -236,9 +229,9 @@ class EapCertificateForm(forms.Form):
                 sub.save()
 
 
-class ServerIdentityForm(forms.Form):
+class RemoteIdentityForm(forms.Form):
     """
-    Manages the server identity field.
+    Manages the remote identity field.
     Containes a checkbox to take the local address field as identity and a field to fill a own identity.
     Either the checkbox is checked or a own identity is field in the textbox.
     """
@@ -293,16 +286,16 @@ class ServerIdentityForm(forms.Form):
                 sub.save()
 
 
-class UserCertificateForm(forms.Form):
+class ServerCertificateForm(forms.Form):
     """
-    Form to choose the Usercertifite. Only shows the certs which contains a private key
+    Form to choose the server certifite. Only shows the certs which contains a private key
     """
     certificate = CertificateChoice(queryset=UserCertificate.objects.none(), label="Server certificate",
                                     empty_label="Nothing selected", required=True)
     identity = IdentityChoice(choices=(), required=True)
 
     def __init__(self, *args, **kwargs):
-        super(UserCertificateForm, self).__init__(*args, **kwargs)
+        super(ServerCertificateForm, self).__init__(*args, **kwargs)
         self.fields['certificate'].queryset = UserCertificate.objects.filter(private_key__isnull=False)
 
     def update_certificates(self):
@@ -349,7 +342,7 @@ class UserCertificateForm(forms.Form):
                 sub.save()
 
 
-class EapTlsForm(UserCertificateForm):
+class EapTlsForm(ServerCertificateForm):
     remote_auth = forms.ChoiceField(widget=forms.Select(), choices=EapTlsAuthentication.AUTH_CHOICES)
 
     def fill(self, connection):
@@ -379,7 +372,7 @@ class EapTlsForm(UserCertificateForm):
                 sub.save()
 
 
-class EapForm(forms.Form):
+class EapForm(ServerCertificateForm):
     """
     Form to choose the eap secret.
     """
@@ -397,6 +390,8 @@ class EapForm(forms.Form):
                 break
         if local_auth is None:
             assert False
+        self.my_certificate = local_auth.identity.certificate.pk
+        self.my_identity = local_auth.identity.pk
 
     def create_connection(self, connection):
         max_round = 0
@@ -405,11 +400,12 @@ class EapForm(forms.Form):
                 max_round = local.round
 
         auth = EapAuthentication(name='local', auth='pubkey', local=connection,
-                                 round=max_round + 1)
+                                 round=max_round + 1, identity=self.my_identity)
         auth.save()
 
     def update_connection(self, connection):
         for local in connection.server_remote.all():
             sub = local.subclass()
             if isinstance(sub, EapAuthentication):
+                sub.identity = self.my_identity
                 sub.save()

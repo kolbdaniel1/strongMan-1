@@ -5,7 +5,6 @@ from django.shortcuts import render
 from django.db.models import ProtectedError
 
 from ..forms import AddOrEditForm
-from ..models import Secret
 from strongMan.helper_apps.vici.wrapper.wrapper import ViciWrapper
 from strongMan.helper_apps.vici.wrapper.exception import ViciException
 from configloader import load_credentials
@@ -41,16 +40,16 @@ class EditHandler:
             return self._render_edit(form)
         else:
             try:
-                store_password = self.secret.password
-                self.secret.password = form.my_password
+                store_secret = self.secret
+                self.secret.password = form.my_salted_password
+                self.secret.salt = form.my_salt
                 self.secret.save()
                 vici = ViciWrapper()
                 vici.clear_creds()
                 load_credentials(vici)
                 messages.add_message(self.request, messages.SUCCESS, 'Successfully updated EAP Secret')
             except ViciException as e:
-                self.secret.password = store_password
-                self.secret.save()
+                store_secret.save()
                 messages.add_message(self.request, messages.ERROR, str(e))
                 return render(self.request, 'eap_secrets/edit.html', {"form": form})
             return redirect(reverse("eap_secrets:overview"))
@@ -59,7 +58,7 @@ class EditHandler:
         if self.request.method == "GET":
             form = AddOrEditForm()
             form.my_username = self.secret.username
-            form.my_password = self.secret.password
+            form.my_salted_password = self.secret.password
             return self._render_edit(form)
         elif self.request.method == "POST":
             if "remove_secret" in self.request.POST:
